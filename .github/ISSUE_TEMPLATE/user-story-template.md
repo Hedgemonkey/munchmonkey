@@ -9,12 +9,13 @@ assignees: ''
 
 **EPIC:** <epic>
 
-As a **[ROLE]** I can **[CAPABILITY]** so that **[BENEFIT]**
+As a **<ROLE>** I can **<CAPABILITY>** so that **<BENEFIT>**
 
 **Acceptance Criteria:**
-- [] [Criteria 1]
-- [] [Criteria 2]
+- [] <Criteria 1>
+- [] <Criteria 2>
 
 
 **Tasks:**
-- [] [Task 1]
+- [] <Task 1>
+- [] <Task 2>
