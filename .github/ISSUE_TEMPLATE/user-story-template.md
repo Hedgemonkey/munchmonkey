@@ -7,14 +7,14 @@ assignees: ''
 
 ---
 
-EPIC: <epic>
+**EPIC:** <epic>
 
-As a **role** I can **capability** so that **benefit**
+As a **[ROLE]** I can **[CAPABILITY]** so that **[BENEFIT]**
 
-Acceptance Criteria:
-- **Criteria 1**
+**Acceptance Criteria:**
+- [] [Criteria 1]
+- [] [Criteria 2]
 
-- **Criteria 2**
 
-
-**Tasks**
+**Tasks:**
+- [] [Task 1]
