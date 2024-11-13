@@ -11,23 +11,23 @@ The MunchMonkey Pop-Up Restaurant site is intended to be used for marketing and 
 
 - [Project Goals](#project-goals)
 
-- [User Experience](#user-experience)<details><summary style="display: inline-block;">Click to expand User Experience</summary>
+- [User Experience](#user-experience)<details><summary>Click to expand User Experience</summary>
 
   - [Epics](#epics)
   - [User Stories](#user-stories)
-  - [Site Structure](#site-structure)<details><summary style="display: inline-block;">(Click to expand Site Structure)</summary>
+  - [Site Structure](#site-structure)<details><summary>Click to expand Site Structure</summary>
 
     - [Database Schema](#database-schema)
     - [Wireframes](#wireframes)
     </details>
-  - [Design Choices](#design-choices)<details><summary style="display: inline-block;">(Click to expand Design Choices)</summary>
+  - [Design Choices](#design-choices)<details><summary>Click to expand Design Choices</summary>
 
     - [Typography](#typography)
     - [Colours](#colours)
     </details>  
   </details>
 
-- [Agile Project Manager](#agile-project-management)
+- [Agile Project Management](#agile-project-management)
 
 - [Features](#features)
 
@@ -38,3 +38,19 @@ The MunchMonkey Pop-Up Restaurant site is intended to be used for marketing and 
 - [Credits](#credits)
 
 </details>
+
+## Project Goals
+
+This site is designed for a fictional Pop-Up Restraunt company called **MunchMonkey** to provide it with a way to take online reservations and allow potential patrons to view the times and locations that the restaurant will be availiable. There is also functionaity for the management to view reservation requests and confirm that the reservation has been made. The management will also be able to add/remove additional dates and locations that they may be available.
+
+The customers will also be able to see the Menus that will be availiable at any given date. Upon requesting a reservation the contact details of the customer will be viewable by the management in case there is a need to contact them. Customrs will be able to cancel the reservation given enough notice and this change will be updated accordingly.
+
+[Back to top](#contents)
+
+
+## User Experience
+### Epics
+The epics of this project are listed below
+
+* Initial Django Setup
+* User Access
