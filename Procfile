@@ -1,0 +1,1 @@
+web: gunicorn munchmonkey.wsgi:application --log-file -

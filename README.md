@@ -1,5 +1,3 @@
-**Title Logo**
-
 # MunchMonkey Pop-Up Restaurant
 
 The MunchMonkey Pop-Up Restaurant site is intended to be used for marketing and promotional purposes for the pop-up restaurant **MunchMonkey**, providing users with an easy way to view the locations and times that the restaurant will be available, as well as the menu items that will be available. They will also be able to register an account in order to make reservations and provide reviews and feedback!
@@ -47,10 +45,11 @@ The customers will also be able to see the Menus that will be availiable at any 
 
 [Back to top](#contents)
 
-
 ## User Experience
+
 ### Epics
+
 The epics of this project are listed below
 
-* Initial Django Setup
-* User Access
+- Initial Django Setup
+- User Access
