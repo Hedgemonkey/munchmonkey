@@ -1,1 +1,1 @@
-web: gunicorn munchmonkey.wsgi:application --log-file -
+web: gunicorn munchmonkey.wsgi:application
