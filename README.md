@@ -1,39 +1,40 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
+**Title Logo**
 
-Welcome,
+# MunchMonkey Pop-Up Restaurant
 
-This is the Code Institute student template for Codeanywhere. If you are using Gitpod then you need [this template](https://github.com/Code-Institute-Org/gitpod-full-template) instead.  We have preinstalled all of the tools you need to get started. It's perfectly ok to use this template as the basis for your project submissions.
+The MunchMonkey Pop-Up Restaurant site is intended to be used for marketing and promotional purposes for the pop-up restaurant **MunchMonkey**, providing users with an easy way to view the locations and times that the restaurant will be available, as well as the menu items that will be available. They will also be able to register an account in order to make reservations and provide reviews and feedback!
 
-You can safely delete this README.md file, or change it for your own project. Please do read it at least once, though! It contains some important information about Codeanywhere and the extensions we use. Some of this information has been updated since the video content was created. The last update to this file was: **August 30th, 2023**
+## Contents
 
-## Codeanywhere Reminders
+<details>
+<summary>Click here for Table of Contents</summary>
 
-To run a frontend (HTML, CSS, Javascript only) application in Codeanywhere, in the terminal, type:
+- [Project Goals](#project-goals)
 
-`python3 -m http.server`
+- [User Experience](#user-experience)<details><summary style="display: inline-block;">Click to expand User Experience</summary>
 
-A button should appear to click: _Open Preview_ or _Open Browser_.
+  - [Epics](#epics)
+  - [User Stories](#user-stories)
+  - [Site Structure](#site-structure)<details><summary style="display: inline-block;">(Click to expand Site Structure)</summary>
 
-To run a frontend (HTML, CSS, Javascript only) application in Codeanywhere with no-cache, you can use this alias for `python3 -m http.server`.
+    - [Database Schema](#database-schema)
+    - [Wireframes](#wireframes)
+    </details>
+  - [Design Choices](#design-choices)<details><summary style="display: inline-block;">(Click to expand Design Choices)</summary>
 
-`http_server`
+    - [Typography](#typography)
+    - [Colours](#colours)
+    </details>  
+  </details>
 
-To run a backend Python file, type `python3 app.py`, if your Python file is named `app.py` of course.
+- [Agile Project Manager](#agile-project-management)
 
-A button should appear to click: _Open Preview_ or _Open Browser_.
+- [Features](#features)
 
-In Codeanywhere you have superuser security privileges by default. Therefore you do not need to use the `sudo` (superuser do) command in the bash terminal in any of the lessons.
+- [Testing](#testing)
 
-To log into the Heroku toolbelt CLI:
+- [Deployment](#deployment)
 
-1. Log in to your Heroku account and go to _Account Settings_ in the menu under your avatar.
-2. Scroll down to the _API Key_ and click _Reveal_
-3. Copy the key
-4. In Codeanywhere, from the terminal, run `heroku_config`
-5. Paste in your API key when asked
+- [Credits](#credits)
 
-You can now use the `heroku` CLI program - try running `heroku apps` to confirm it works. This API key is unique and private to you so do not share it. If you accidentally make it public then you can create a new one with _Regenerate API Key_.
-
----
-
-Happy coding!
+</details>
