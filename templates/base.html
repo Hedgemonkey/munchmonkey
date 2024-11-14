@@ -12,13 +12,16 @@
         href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i" rel="stylesheet" />
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
     <title>MunchMonkey Pop-Up Munch for the masses</title>
 </head>
 
 <body>
-    <header class="header d-flex justify-content-center align-items-center" style="background-image: url('{% static 'assets/img/about.jpg' %}'); background-size: cover; background-position: center bottom;">
+    <header class="header d-flex justify-content-center align-items-center"
+        style="background-image: url('{% static 'assets/img/about.jpg' %}'); background-size: cover; background-position: center bottom;">
         <h1 class="site-heading text-center text-faded d-none d-lg-block">
             <span class="site-heading-upper text-primary mb-3 text-shadow-dark">Munch Monkey</span>
             <span class="site-heading-lower callout-primary">Pop-Up Munch for the masses</span>
@@ -45,10 +48,16 @@
     </nav>
     {% block content %}
     {% endblock %}
-    <footer class="footer text-faded text-center py-5">
-        <div class="container">
-            <p class="m-0 small">Copyright &copy; Hedgemonkey 2023</p>
-        </div>
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 dark-bg sticky-bottom">
+        {% block copyright %}
+        <p class="m-0 text-center text-white">Made by Hedgemonkey Labs &copy; 2024</p>
+        {% endblock copyright %}
+        <p class="m-0 text-center text-white">Follow us: <i class="fab fa-facebook-square ms-3"></i>
+            <i class="fab fa-twitter-square ms-3"></i>
+            <i class="fab fa-instagram-square ms-3"></i>
+            <i class="fab fa-youtube-square ms-3"></i>
+        </p>
     </footer>
     <!-- Add Bootstrap5 JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
