@@ -53,3 +53,7 @@ The epics of this project are listed below
 
 - Initial Django Setup
 - User Access
+
+## Credits
+
+Startbootstrap Business Casual Theme - [https://startbootstrap.com/theme/business-casual]
