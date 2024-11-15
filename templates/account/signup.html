@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+{% block title %}{% trans "Munch Monkey - Sign Up" %}{% endblock %}
+{% block description %}Sign up to MunchMonkey{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h3>{% trans "Sign Up" %}</h3>
+        </div>
+        <div class="card-body">
+            <p class="card-text">{% blocktrans %}Welcome to Munch Monkey. To make a reservation, please sign up. If
+                you already hav an account, then <a class="link" href="{{ login_url }}">log in</a>{% endblocktrans %}
+            </p>
+            <a href="{{ login_url }}" class="btn btn-primary">Log In</a>
+        </div>
+        <div class="card-body">
+            <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+                <button class="btn btn-primary right" type="submit">{% trans "Sign Up" %} &raquo;</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+<!-- Load the signup.js file using the script tag -->
+<script src="{% static 'js/signup.js' %}"></script>

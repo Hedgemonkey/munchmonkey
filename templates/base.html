@@ -1,4 +1,10 @@
 {% load static %}
+
+{% url 'account_login' as login_url %}
+{% url 'account_logout' as logout_url %}
+{% url 'account_signup' as signup_url %}
+{% url 'account_email' as email_url %}
+{% url 'socialaccount_connections' as socialaccount_url %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,7 +22,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
-    <title>MunchMonkey Pop-Up Munch for the masses</title>
+    <title>{% block title %}{% endblock title %}</title>
 </head>
 
 <body>
@@ -24,7 +30,7 @@
         style="background-image: url('{% static 'assets/img/about.jpg' %}'); background-size: cover; background-position: center bottom;">
         <h1 class="site-heading text-center text-faded d-none d-lg-block">
             <span class="site-heading-upper text-primary mb-3 text-shadow-dark">Munch Monkey</span>
-            <span class="site-heading-lower callout-primary">Pop-Up Munch for the masses</span>
+            <span class="site-heading-lower callout-primary">{% block description %}{% endblock description %}</span>
         </h1>
     </header>
     <!-- Navigation-->
@@ -42,19 +48,41 @@
                     <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#">Munch</a></li>
                     <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#">Locations</a></li>
                     <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#">Reservations</a></li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == logout_url %}active{% endif %}" aria-current="page"
+                            href="{% url 'account_logout' %}">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == login_url %}active{% endif %}" aria-current="page"
+                            href="{% url 'account_login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == signup_url %}active{% endif %}" aria-current="page"
+                            href="{% url 'account_signup' %}">Sign Up</a>
+                    </li>
+                    {% endif %}
                 </ul>
+                {% if user.is_authenticated %}
+                <p class="text-end m-3 text-white">You are logged in as <span class="text-success">{{ user.username }}</span></p>
+                {% else %}
+                <p class="text-end m-3 text-white">You are <span class="text-danger">not</span> logged in.</p>
+                {% endif %}
             </div>
         </div>
     </nav>
-    {% block content %}
-    {% endblock %}
+    <main class="container mt-5 mb-5 main-content">
+        {% block content %}
+        {% endblock %}
+    </main>
     <!-- Footer -->
-    <footer class="footer mt-auto py-3 dark-bg sticky-bottom">
+    <footer class="footer mt-auto py-3 dark-bg fixed-bottom" style="bottom: 0;">
         {% block copyright %}
         <p class="m-0 text-center text-white">Made by Hedgemonkey Labs &copy; 2024</p>
         {% endblock copyright %}
         <p class="m-0 text-center text-white">Follow us: <i class="fab fa-facebook-square ms-3"></i>
-            <i class="fab fa-twitter-square ms-3"></i>
+            <i class="fab fa-twitter-square ms-3"></i>that do
             <i class="fab fa-instagram-square ms-3"></i>
             <i class="fab fa-youtube-square ms-3"></i>
         </p>

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% block title %}{% trans "Munch Monkey - Sign In" %}{% endblock %}
+{% block description %}Sign in to MunchMonkey{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">
+                <h3>{% trans "Please Sign In" %}</h3>
+            </h5>
+        </div>
+        <div class="card-body">
+            <p class="card-text">{% blocktrans %}Welcome back to Munch Monkey. To make a reservation, please log in. If
+                you have not created an account yet, then <a class="link" href="{{ signup_url }}">sign up</a>
+                first.{% endblocktrans %}</p>
+            <a href="{{ signup_url }}" class="btn btn-primary">Sign Up</a>
+        </div>
+        <div class="card-body">
+            <form class="login" method="POST" action="{% url 'account_login' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+                <button class="btn btn-signup btn-primary right" type="submit">{% trans "Sign In" %}</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 mt-3 offset-md-2">
+        </div>
+    </div>
+</div>
+{% endblock %}

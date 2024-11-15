@@ -16,9 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic.base import TemplateView
+
+from allauth.account.decorators import secure_admin_login
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
+    path("accounts/profile/", TemplateView.as_view(template_name="profile.html")),
     path('', include('welcome.urls'), name='home'),
 ]
