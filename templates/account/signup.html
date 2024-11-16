@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load i18n %}
+{% load static %}
 
 {% block head_title %}{% trans "Signup" %}{% endblock %}
 {% block title %}{% trans "Munch Monkey - Sign Up" %}{% endblock %}
@@ -10,7 +11,7 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h3>{% trans "Sign Up" %}</h3>
+            <h3>{% trans "Signup" %}</h3>
         </div>
         <div class="card-body">
             <p class="card-text">{% blocktrans %}Welcome to Munch Monkey. To make a reservation, please sign up. If
@@ -22,15 +23,31 @@
             <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
                 {% csrf_token %}
                 {{ form.as_p }}
-                {% if redirect_field_value %}
-                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                {% endif %}
-                <button class="btn btn-primary right" type="submit">{% trans "Sign Up" %} &raquo;</button>
+                <input type="hidden" name="original_page" id="originalPage" value="{{ request.META.HTTP_REFERER }}">
+                <button class="btn btn-primary right" type="submit">{% trans "Signup" %} &raquo;</button>
             </form>
         </div>
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card">
+            <div class="modal-header card-header">
+                <h5 class="modal-title" id="responseModalLabel">Response</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body card-body">
+                <!-- The response message will be inserted here by JavaScript -->
+            </div>
+            <div class="modal-footer card-footer">
+                <button type="button" class="btn btn-primary" id="modalCloseButton" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
-<!-- Load the signup.js file using the script tag -->
+{% block scripts %}
 <script src="{% static 'js/signup.js' %}"></script>
+{% endblock %}

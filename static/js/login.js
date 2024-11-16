@@ -1,25 +1,20 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const signupForm = document.querySelector("form.signup");
+    const loginForm = document.querySelector("form");
 
-    signupForm.addEventListener("submit", function (event) {
+    loginForm.addEventListener("submit", function (event) {
         event.preventDefault();
         console.log("Form submitted");
 
         // Get the form data
-        const formData = new FormData(signupForm);
+        const formData = new FormData(loginForm);
         // Get the CSRF token from the form data
         const csrfTokenValue = formData.get('csrfmiddlewaretoken');
         // Get the original page URL from the hidden input field
-        let originalPage = formData.get('original_page');
+        const originalPage = formData.get('original_page');
         console.log(formData);
 
-        // Check if originalPage is null and provide a default redirect URL
-        if (!originalPage) {
-            originalPage = "/";
-        }
-
         // Send the form data using AJAX
-        fetch("/custom-signup/", {
+        fetch("/custom-login/", {
             method: "POST",
             body: formData,
             headers: {
@@ -44,54 +39,30 @@ document.addEventListener("DOMContentLoaded", function () {
                     const closeButton = responseModal.querySelector("#modalCloseButton");
 
                     if (data.success) {
-                        // Handle successful signup
-                        console.log("Signup successful:", data.message);
-                        modalTitle.textContent = "Signup Successful";
+                        // Handle successful login
+                        console.log("Login successful:", data.message);
+                        modalTitle.textContent = "Login Successful";
                         modalBody.textContent = data.message;
                         closeButton.textContent = "Return";
                         closeButton.addEventListener("click", function () {
-                            // Perform login after successful signup
-                            const loginFormData = new FormData();
-                            loginFormData.append('login', formData.get('username'));
-                            loginFormData.append('password', formData.get('password1'));
-                            loginFormData.append('csrfmiddlewaretoken', csrfTokenValue);
-
-                            fetch("/custom-login/", {
-                                method: "POST",
-                                body: loginFormData,
-                                headers: {
-                                    'X-CSRFToken': csrfTokenValue,
-                                },
-                            })
-                                .then((loginResponse) => {
-                                    if (loginResponse.ok) {
-                                        window.location.href = originalPage;
-                                    } else {
-                                        throw new Error('Login after signup failed.');
-                                    }
-                                })
-                                .catch((loginError) => {
-                                    console.error("Login error:", loginError);
-                                    modalTitle.textContent = "Login Error";
-                                    modalBody.textContent = loginError.message;
-                                    closeButton.textContent = "Close";
-                                    new bootstrap.Modal(responseModal).show();
-                                });
+                            window.location.href = originalPage;
                         });
                     } else {
-                        // Handle signup failure
-                        console.log("Signup failed:", data.error);
-                        modalTitle.textContent = "Signup Failed";
+                        // Handle login failure
+                        console.log("Login failed:", data.error);
+                        modalTitle.textContent = "Login Failed";
                         modalBody.innerHTML = ""; // Clear previous content
-                        const errorList = document.createElement("ul");
-                        for (const [field, errors] of Object.entries(data.error)) {
-                            errors.forEach(function (error) {
+                        if (data.error && data.error.__all__) {
+                            const errorList = document.createElement("ul");
+                            data.error.__all__.forEach(function (error) {
                                 const listItem = document.createElement("li");
-                                listItem.textContent = `${field}: ${error}`;
+                                listItem.textContent = error;
                                 errorList.appendChild(listItem);
                             });
+                            modalBody.appendChild(errorList);
+                        } else {
+                            modalBody.textContent = "An unknown error occurred.";
                         }
-                        modalBody.appendChild(errorList);
                         closeButton.textContent = "Close";
                     }
                     new bootstrap.Modal(responseModal).show();

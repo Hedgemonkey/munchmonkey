@@ -1,41 +1,55 @@
 {% extends "base.html" %}
 
 {% load i18n %}
-{% load account socialaccount %}
+{% load static %}
 
-{% block head_title %}{% trans "Sign In" %}{% endblock %}
-{% block title %}{% trans "Munch Monkey - Sign In" %}{% endblock %}
-{% block description %}Sign in to MunchMonkey{% endblock %}
+{% block head_title %}{% trans "Login" %}{% endblock %}
+{% block title %}{% trans "Munch Monkey - Login" %}{% endblock %}
+{% block description %}Log in to MunchMonkey{% endblock %}
 
 {% block content %}
-
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h5 class="card-title">
-                <h3>{% trans "Please Sign In" %}</h3>
-            </h5>
+            <h3>{% trans "Login" %}</h3>
         </div>
         <div class="card-body">
             <p class="card-text">{% blocktrans %}Welcome back to Munch Monkey. To make a reservation, please log in. If
-                you have not created an account yet, then <a class="link" href="{{ signup_url }}">sign up</a>
+                you have not created an account yet, then <a href="{{ signup_url }}" class="btn btn-primary btn-sm">Sign Up</a>
                 first.{% endblocktrans %}</p>
-            <a href="{{ signup_url }}" class="btn btn-primary">Sign Up</a>
         </div>
         <div class="card-body">
-            <form class="login" method="POST" action="{% url 'account_login' %}">
+            <form class="login" method="POST" action="{% url 'custom_login' %}">
                 {% csrf_token %}
                 {{ form.as_p }}
+                <input type="hidden" name="original_page" id="originalPage" value="{{ request.META.HTTP_REFERER }}">
                 {% if redirect_field_value %}
                 <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                 {% endif %}
-                <button class="btn btn-signup btn-primary right" type="submit">{% trans "Sign In" %}</button>
+                <button class="btn btn-primary right" type="submit">{% trans "Login" %} &raquo;</button>
             </form>
-        </div>
     </div>
-    <div class="row">
-        <div class="col-md-8 mt-3 offset-md-2">
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card">
+            <div class="modal-header card-header">
+                <h5 class="modal-title" id="responseModalLabel">Login Response</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body card-body">
+                <!-- The response message will be inserted here by JavaScript -->
+            </div>
+            <div class="modal-footer card-footer">
+                <button type="button" class="btn btn-primary" id="modalCloseButton" data-bs-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
+<!-- Load the login.js file using the script tag -->
+{% block scripts %}
+<script src="{% static 'js/login.js' %}"></script>
 {% endblock %}
