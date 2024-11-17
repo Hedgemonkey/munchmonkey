@@ -1,10 +1,11 @@
 {% load static %}
+{% load i18n %}
 
 {% url 'account_login' as login_url %}
 {% url 'account_logout' as logout_url %}
 {% url 'account_signup' as signup_url %}
-{% url 'account_email' as email_url %}
-{% url 'socialaccount_connections' as socialaccount_url %}
+{% url 'account_detail' as account_detail_url %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,7 +23,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
-    <title>{% block title %}{% endblock title %}</title>
+    <title>{% block title %}MunchMonkey Pop-Up Munch for the masses{% endblock title %}</title>
 </head>
 
 <body>
@@ -30,7 +31,7 @@
         style="background-image: url('{% static 'assets/img/about.jpg' %}'); background-size: cover; background-position: center bottom;">
         <h1 class="site-heading text-center text-faded d-none d-lg-block">
             <span class="site-heading-upper text-primary mb-3 text-shadow-dark">Munch Monkey</span>
-            <span class="site-heading-lower callout-primary">{% block description %}{% endblock description %}</span>
+            <span class="site-heading-lower callout-primary">{% block description %}Pop-Up Munch for the masses{% endblock description %}</span>
         </h1>
     </header>
     <!-- Navigation-->
@@ -49,6 +50,9 @@
                     <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#">Locations</a></li>
                     <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#">Reservations</a></li>
                     {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ account_detail_url }}">{% trans "Account" %}</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == logout_url %}active{% endif %}" aria-current="page"
                             href="{% url 'account_logout' %}">Logout</a>

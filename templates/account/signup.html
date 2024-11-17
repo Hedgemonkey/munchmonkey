@@ -3,28 +3,23 @@
 {% load i18n %}
 {% load static %}
 
-{% block head_title %}{% trans "Signup" %}{% endblock %}
-{% block title %}{% trans "Munch Monkey - Sign Up" %}{% endblock %}
-{% block description %}Sign up to MunchMonkey{% endblock %}
+{% block title %}Sign Up{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h3>{% trans "Signup" %}</h3>
+            <h3>{% trans "Sign Up" %}</h3>
         </div>
         <div class="card-body">
-            <p class="card-text">{% blocktrans %}Welcome to Munch Monkey. To make a reservation, please sign up. If
-                you already hav an account, then <a class="link" href="{{ login_url }}">log in</a>{% endblocktrans %}
-            </p>
-            <a href="{{ login_url }}" class="btn btn-primary">Log In</a>
-        </div>
-        <div class="card-body">
-            <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+            <form class="signup" method="POST" action="{% url 'custom_signup' %}">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <input type="hidden" name="original_page" id="originalPage" value="{{ request.META.HTTP_REFERER }}">
-                <button class="btn btn-primary right" type="submit">{% trans "Signup" %} &raquo;</button>
+                <input type="hidden" name="original_page" id="originalPage" value="{{ request.META.HTTP_REFERER|default:'/' }}">
+                {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+                <button class="btn btn-primary right" type="submit">{% trans "Sign Up" %} &raquo;</button>
             </form>
         </div>
     </div>
@@ -35,7 +30,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content card">
             <div class="modal-header card-header">
-                <h5 class="modal-title" id="responseModalLabel">Response</h5>
+                <h5 class="modal-title" id="responseModalLabel">Signup Response</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body card-body">
@@ -48,6 +43,7 @@
     </div>
 </div>
 {% endblock %}
+
 {% block scripts %}
 <script src="{% static 'js/signup.js' %}"></script>
 {% endblock %}

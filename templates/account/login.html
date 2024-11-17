@@ -19,15 +19,7 @@
                 first.{% endblocktrans %}</p>
         </div>
         <div class="card-body">
-            <form class="login" method="POST" action="{% url 'custom_login' %}">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <input type="hidden" name="original_page" id="originalPage" value="{{ request.META.HTTP_REFERER }}">
-                {% if redirect_field_value %}
-                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                {% endif %}
-                <button class="btn btn-primary right" type="submit">{% trans "Login" %} &raquo;</button>
-            </form>
+            {% include 'account/login_form.html' %}
     </div>
 </div>
 

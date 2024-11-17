@@ -1,22 +1,23 @@
 {% extends "base.html" %}
 
-{% load i18n %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Logout{% endblock %}
+{% block title %}Account Details{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h3>{% trans "Logout" %}</h3>
+            <h3>{% trans "Account Details" %}</h3>
         </div>
         <div class="card-body">
-            <form class="logout" method="POST" action="{% url 'custom_logout' %}">
-                {% csrf_token %}
-                <input type="hidden" name="original_page" id="originalPage" value="{{ request.META.HTTP_REFERER|default:'/' }}">
-                <button class="btn btn-primary right" type="submit">{% trans "Logout" %} &raquo;</button>
-            </form>
+            <p>{% trans "Username" %}: {{ user.username }}</p>
+            <p>{% trans "First Name" %}: {{ user.first_name }}</p>
+            <p>{% trans "Last Name" %}: {{ user.last_name }}</p>
+            <p>{% trans "Email" %}: {{ user.email }}</p>
+            <a href="{% url 'account_edit' %}" class="btn btn-primary">{% trans "Edit" %}</a>
+            <a href="{% url 'account_delete' %}" class="btn btn-danger">{% trans "Delete Account" %}</a>
         </div>
     </div>
 </div>
@@ -26,20 +27,19 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content card">
             <div class="modal-header card-header">
-                <h5 class="modal-title" id="responseModalLabel">Logout Response</h5>
+                <h5 class="modal-title" id="responseModalLabel">{% trans "Response" %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body card-body">
                 <!-- The response message will be inserted here by JavaScript -->
             </div>
             <div class="modal-footer card-footer">
-                <button type="button" class="btn btn-primary" id="modalCloseButton" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="modalCloseButton" data-bs-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
-
 {% block scripts %}
-<script src="{% static 'js/logout.js' %}"></script>
+<script src="{% static 'js/change_password.js' %}"></script>
 {% endblock %}

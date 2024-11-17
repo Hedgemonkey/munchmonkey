@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}Edit Account{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h3>{% trans "Edit Account" %}</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" class="edit-account" action="{% url 'account_edit' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="hidden" name="original_page" id="originalPage" value="{{ request.META.HTTP_REFERER|default:'/' }}">
+                <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+            </form>
+        </div>
+    </div>
+    <div class="card mt-4">
+        <div class="card-header">
+            <h3>{% trans "Change Password" %}</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" class="change-password" action="{% url 'account_change_password' %}">
+                {% csrf_token %}
+                {{ password_form.as_p }}
+                <input type="hidden" name="original_page" id="originalPage-password" value="{{ request.META.HTTP_REFERER|default:'/' }}">
+                <button type="submit" class="btn btn-primary">{% trans "Change Password" %}</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card">
+            <div class="modal-header card-header">
+                <h5 class="modal-title" id="responseModalLabel">{% trans "Response" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body card-body">
+                <!-- The response message will be inserted here by JavaScript -->
+            </div>
+            <div class="modal-footer card-footer">
+                <button type="button" class="btn btn-primary" id="modalCloseButton" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'js/edit_account.js' %}"></script>
+<script src="{% static 'js/change_password.js' %}"></script>
+{% endblock %}
