@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         for (const [field, errors] of Object.entries(data.error)) {
                             errors.forEach(function (error) {
                                 const listItem = document.createElement("li");
-                                listItem.textContent = `${field}: ${error}`;
+                                listItem.textContent = `${error}`;
                                 errorList.appendChild(listItem);
                             });
                         }
