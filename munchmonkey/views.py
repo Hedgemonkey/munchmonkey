@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from allauth.account.views import LoginView, SignupView
 from allauth.account.forms import LoginForm, SignupForm, ChangePasswordForm
-from django.contrib.auth import logout
+from django.contrib.auth import logout, authenticate
 
 class CustomLoginView(LoginView):
     form_class = LoginForm
