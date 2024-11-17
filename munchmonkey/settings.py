@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'cloudinary',
     'cloudinary_storage',
+    'custom_auth',
     'welcome',
 ]
 
@@ -72,6 +73,8 @@ ACCOUNT_LOGIN_REDIRECT_URL = 'home'
 ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 
 MIDDLEWARE = [
