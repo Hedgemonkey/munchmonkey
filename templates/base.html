@@ -23,12 +23,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+    {% include 'includes/django_vars.html' %}
     <title>{% block title %}MunchMonkey Pop-Up Munch for the masses{% endblock title %}</title>
 </head>
 
 <body>
-    <header class="header d-flex justify-content-center align-items-center"
-        style="background-image: url('{% static 'assets/img/about.jpg' %}'); background-size: cover; background-position: center bottom;">
+    <header class="header d-flex justify-content-center align-items-center" style="background-image: url('{% static 'assets/img/about.jpg' %}'); background-size: cover; background-position: center bottom;">
         <h1 class="site-heading text-center text-faded d-none d-lg-block">
             <span class="site-heading-upper text-primary mb-3 text-shadow-dark">Munch Monkey</span>
             <span class="site-heading-lower callout-primary">{% block description %}Pop-Up Munch for the masses{% endblock description %}</span>

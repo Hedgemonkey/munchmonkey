@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(formData);
 
         // Send the form data using AJAX
-        fetch("/custom-login/", {
+        fetch(customLoginUrl, {
             method: "POST",
             body: formData,
             headers: {

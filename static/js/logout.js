@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(formData);
 
         // Send the form data using AJAX
-        fetch("/custom-logout/", {
+        fetch(customLogoutUrl, {
             method: "POST",
             body: formData,
             headers: {

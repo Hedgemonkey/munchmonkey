@@ -43,5 +43,8 @@
 {% endblock %}
 <!-- Load the login.js file using the script tag -->
 {% block scripts %}
+<script>
+    const customLoginUrl = "{% url 'custom_login' %}";
+</script>
 <script src="{% static 'js/login.js' %}"></script>
 {% endblock %}

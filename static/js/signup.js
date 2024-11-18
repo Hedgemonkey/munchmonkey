@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Send the form data using AJAX
-        fetch("/custom-signup/", {
+        fetch(customSignupUrl, {
             method: "POST",
             body: formData,
             headers: {
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             loginFormData.append('password', formData.get('password1'));
                             loginFormData.append('csrfmiddlewaretoken', csrfTokenValue);
 
-                            fetch("/custom-login/", {
+                            fetch(customLoginUrl, {
                                 method: "POST",
                                 body: loginFormData,
                                 headers: {

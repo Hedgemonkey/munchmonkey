@@ -11,13 +11,14 @@ class CustomLoginView(LoginView):
     form_class = LoginForm
 
     def form_valid(self, form):
-        response = form.login(self.request, redirect_url=self.get_success_url())
-        if isinstance(response, JsonResponse):
-            return response
-        elif hasattr(response, 'url'):
-            return JsonResponse({"success": True, "message": "Login successful"})
-        else:
-            return JsonResponse({"success": False, "error": "Invalid credentials"})
+        return JsonResponse({"success": True, "message": "Login successful"})
+#        response = form.login(self.request, redirect_url=self.get_success_url())
+#        if isinstance(response, JsonResponse):
+#            return response
+#        elif hasattr(response, 'url'):
+#            return JsonResponse({"success": True, "message": "Login successful"})
+#        else:
+#            return JsonResponse({"success": False, "error": "Invalid credentials"})
 
     def form_invalid(self, form):
         return JsonResponse({"success": False, "error": form.errors})
@@ -59,9 +60,18 @@ class AccountEditView(UpdateView):
         return context
 
     def form_valid(self, form):
-        form.save()
-        return JsonResponse({"success": True, "message": "Account updated successfully", "redirect_url": str(self.success_url)})
+        form.save()    
+    
+    def form_valid(self, form):
+        response = form.login(self.request, redirect_url=self.get_success_url())
+        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({"success": True, "message": "Login successful"})
+        return response
 
+    def form_invalid(self, form):
+        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({"success": False, "error": form.errors})
+        return super().form_invalid(form)
     def form_invalid(self, form):
         return JsonResponse({"success": False, "error": form.errors})
 
@@ -93,7 +103,7 @@ class CustomPasswordChangeView(View):
             new_password = form.cleaned_data.get('new_password1')
             user = authenticate(username=request.user.username, password=new_password)
             if user is not None:
-                login(request, user)
+                user.login(request, user)
                 return JsonResponse({"success": True, "message": "Password changed successfully", "redirect_url": str(self.success_url)})
             else:
                 # Render the login form as HTML
