@@ -2,23 +2,27 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.generic import DetailView, UpdateView, DeleteView, View
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 from allauth.account.views import LoginView, SignupView
 from allauth.account.forms import LoginForm, SignupForm, ChangePasswordForm
 from django.contrib.auth import logout, authenticate
+from .forms import CustomUserChangeForm
+from .models import CustomUser
+
+CustomUser = get_user_model()
 
 class CustomLoginView(LoginView):
     form_class = LoginForm
 
     def form_valid(self, form):
-        return JsonResponse({"success": True, "message": "Login successful"})
-#        response = form.login(self.request, redirect_url=self.get_success_url())
-#        if isinstance(response, JsonResponse):
-#            return response
-#        elif hasattr(response, 'url'):
-#            return JsonResponse({"success": True, "message": "Login successful"})
-#        else:
-#            return JsonResponse({"success": False, "error": "Invalid credentials"})
+        response = form.login(self.request, redirect_url=self.get_success_url())
+        if isinstance(response, JsonResponse):
+            return response
+        elif hasattr(response, 'url'):
+            return JsonResponse({"success": True, "message": "Login successful"})
+        else:
+            return JsonResponse({"success": False, "error": "Invalid credentials"})
 
     def form_invalid(self, form):
         return JsonResponse({"success": False, "error": form.errors})
@@ -46,8 +50,8 @@ class AccountDetailView(DetailView):
         return self.request.user
 
 class AccountEditView(UpdateView):
-    model = User
-    fields = ['first_name', 'last_name', 'email']
+    model = CustomUser
+    form_class = CustomUserChangeForm
     template_name = 'account/account_edit.html'
     success_url = reverse_lazy('account_detail')
 
@@ -60,21 +64,12 @@ class AccountEditView(UpdateView):
         return context
 
     def form_valid(self, form):
-        form.save()    
-    
-    def form_valid(self, form):
-        response = form.login(self.request, redirect_url=self.get_success_url())
-        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({"success": True, "message": "Login successful"})
-        return response
+        form.save()
+        return JsonResponse({"success": True, "message": "Account updated successfully", "redirect_url": str(self.success_url)})
 
-    def form_invalid(self, form):
-        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({"success": False, "error": form.errors})
-        return super().form_invalid(form)
     def form_invalid(self, form):
         return JsonResponse({"success": False, "error": form.errors})
-
+    
 class AccountDeleteView(DeleteView):
     model = User
     template_name = 'account/account_delete.html'

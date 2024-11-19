@@ -12,6 +12,7 @@
             <h3>{% trans "Logout" %}</h3>
         </div>
         <div class="card-body">
+            <p>{% trans "Are you sure you want to log out?" %}</p>
             <form class="logout" method="POST" action="{% url 'custom_logout' %}">
                 {% csrf_token %}
                 <input type="hidden" name="original_page" id="originalPage" value="{{ request.META.HTTP_REFERER|default:'/' }}">

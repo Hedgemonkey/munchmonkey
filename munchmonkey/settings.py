@@ -49,6 +49,9 @@ AUTHENTICATION_BACKENDS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'custom_auth',
+    'booking',
+    'welcome',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -61,8 +64,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'cloudinary',
     'cloudinary_storage',
-    'custom_auth',
-    'welcome',
 ]
 
 SITE_ID = 1
@@ -73,6 +74,10 @@ ACCOUNT_LOGIN_REDIRECT_URL = 'home'
 ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+AUTH_USER_MODEL = 'custom_auth.CustomUser'
+ACCOUNT_FORMS = {
+    'signup': 'custom_auth.forms.CustomSignupForm',
+}
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
