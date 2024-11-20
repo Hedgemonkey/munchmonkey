@@ -1,0 +1,35 @@
+<!-- FILE: booking/templates/booking/add_event.html -->
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Add Event" %}{% endblock title %}
+{% block description %}{% trans "Add a new event" %}{% endblock description %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white text-center">
+            <h1 class="card-title mb-4">{% trans "Add Event" %}</h1>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'add_event' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="location" class="form-label">{% trans "Location" %}</label>
+                    <input type="text" class="form-control" id="location" name="location" required>
+                </div>
+                <div class="mb-3">
+                    <label for="start" class="form-label">{% trans "Start" %}</label>
+                    <input type="datetime-local" class="form-control" id="start" name="start" required>
+                </div>
+                <div class="mb-3">
+                    <label for="stop" class="form-label">{% trans "Stop" %}</label>
+                    <input type="datetime-local" class="form-control" id="stop" name="stop" required>
+                </div>
+                <button type="submit" class="btn btn-primary">{% trans "Add Event" %}</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

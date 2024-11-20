@@ -25,8 +25,18 @@ def staff_dashboard(request):
 
 @login_required
 def events_overview(request):
-    events = Event.objects.all()
+    events = Event.objects.all().order_by('start')
     return render(request, 'booking/events_overview.html', {'events': events})
+
+@login_required
+def add_event(request):
+    if request.method == 'POST':
+        location = request.POST.get('location')
+        start = request.POST.get('start')
+        stop = request.POST.get('stop')
+        Event.objects.create(location=location, start=start, stop=stop)
+        return redirect('events_overview')
+    return render(request, 'booking/add_event.html')
 
 @login_required
 def edit_event(request, event_id):
@@ -43,3 +53,9 @@ def save_event(request, event_id):
         event.stop = request.POST.get('stop')
         event.save()
         return redirect('events_overview')
+
+@login_required
+def remove_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    event.delete()
+    return redirect('events_overview')

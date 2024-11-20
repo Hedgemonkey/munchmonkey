@@ -24,6 +24,10 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
     {% include 'includes/django_vars.html' %}
+    <!-- Load custom styles -->
+    {% block styles %}
+    {% endblock styles %}
+    
     <title>{% block title %}MunchMonkey Pop-Up Munch for the masses{% endblock title %}</title>
 </head>
 
