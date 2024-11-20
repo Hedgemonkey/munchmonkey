@@ -7,12 +7,8 @@ class LocationFilterForm(forms.Form):
     ALL_LOCATIONS = [('', 'All Locations')]
     ALL_DATES = [('', 'All Dates')]
 
-    location_choices = ALL_LOCATIONS + [
-        (loc, loc) for loc in Event.objects.values_list('location', flat=True).distinct()
-    ]
-
     location = forms.ChoiceField(
-        choices=location_choices,
+        choices=[],
         required=False,
         label='Select by Location'
     )
@@ -21,3 +17,10 @@ class LocationFilterForm(forms.Form):
         widget=forms.DateInput(attrs={'class': 'form-control', 'id': 'id_date'}),
         label='Select by Date'
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        location_choices = self.ALL_LOCATIONS + [
+            (loc, loc) for loc in Event.objects.values_list('location', flat=True).distinct()
+        ]
+        self.fields['location'].choices = location_choices

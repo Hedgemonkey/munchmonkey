@@ -1,0 +1,39 @@
+<!-- FILE: booking/templates/booking/edit_event.html -->
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Edit Event" %}{% endblock title %}
+{% block description %}{% trans "Edit and manage the selected event" %}{% endblock description %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white text-center">
+            <h1 class="card-title mb-4">{% trans "Edit Event" %}</h1>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'save_event' event.id %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="location" class="form-label">{% trans "Location" %}</label>
+                    <input type="text" class="form-control" id="location" name="location" value="{{ event.location }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="start" class="form-label">{% trans "Start" %}</label>
+                    <input type="datetime-local" class="form-control" id="start" name="start" value="{{ event.start|date:'Y-m-d\TH:i' }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="stop" class="form-label">{% trans "Stop" %}</label>
+                    <input type="datetime-local" class="form-control" id="stop" name="stop" value="{{ event.stop|date:'Y-m-d\TH:i' }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{% trans "Available Slots" %}</label>
+                    <p class="form-control-plaintext">{{ available_slots }}</p>
+                </div>
+                <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

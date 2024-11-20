@@ -4,10 +4,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from .views import locations
+from . import views
 
 urlpatterns = [
-    path('locations/', locations, name='locations'),
+    path('locations/', views.locations, name='locations'),
+    path('staff/dashboard/', views.staff_dashboard, name='staff_dashboard'),
+    path('staff/events/', views.events_overview, name='events_overview'),
+    path('staff/events/<int:event_id>/edit/', views.edit_event, name='edit_event'),
+    path('staff/events/<int:event_id>/save/', views.save_event, name='save_event'),
     # other URL patterns
 ]
 

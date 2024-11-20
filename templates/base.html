@@ -28,54 +28,81 @@
 </head>
 
 <body>
-    <header class="header d-flex justify-content-center align-items-center" style="background-image: url('{% static 'assets/img/about.jpg' %}'); background-size: cover; background-position: center bottom;">
+    <header class="header d-flex justify-content-center align-items-center"
+        style="background-image: url('{% static 'assets/img/about.jpg' %}'); background-size: cover; background-position: center bottom;">
         <h1 class="site-heading text-center text-faded d-none d-lg-block">
             <span class="site-heading-upper text-primary mb-3 text-shadow-dark">Munch Monkey</span>
             <span class="site-heading-lower callout-primary">{% block description %}Pop-Up Munch for the masses{% endblock description %}</span>
         </h1>
     </header>
     <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-dark py-lg-4 sticky-top" id="mainNav">
-        <div class="container">
-            <a class="navbar-brand text-uppercase fw-bold d-lg-none" href="{% url 'home' %}">MunchMonkey</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'home' %}">Home</a>
-                    </li>
-                    <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#">About</a></li>
-                    <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#">Munch</a></li>
-                    <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'locations' %}">Locations</a></li>
-                    <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#">Reservations</a></li>
+    <div class="navbar-container sticky-top">
+        <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand text-uppercase fw-bold d-lg-none" href="{% url 'home' %}">MunchMonkey</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation"><span
+                        class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'home' %}">Home</a>
+                        </li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#">About</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#">Munch</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase"
+                                href="{% url 'locations' %}">Locations</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#">Reservations</a></li>
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ account_detail_url }}">{% trans "Account" %}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == logout_url %}active{% endif %}" aria-current="page"
+                                href="{% url 'account_logout' %}">Logout</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == login_url %}active{% endif %}" aria-current="page"
+                                href="{% url 'account_login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == signup_url %}active{% endif %}" aria-current="page"
+                                href="{% url 'account_signup' %}">Sign Up</a>
+                        </li>
+                        {% endif %}
+                    </ul>
                     {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ account_detail_url }}">{% trans "Account" %}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.path == logout_url %}active{% endif %}" aria-current="page"
-                            href="{% url 'account_logout' %}">Logout</a>
-                    </li>
+                    <p class="text-end m-3 text-white">You are logged in as <span class="text-success">{{ user.username }}</span></p>
                     {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.path == login_url %}active{% endif %}" aria-current="page"
-                            href="{% url 'account_login' %}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.path == signup_url %}active{% endif %}" aria-current="page"
-                            href="{% url 'account_signup' %}">Sign Up</a>
-                    </li>
+                    <p class="text-end m-3 text-white">You are <span class="text-danger">not</span> logged in.</p>
                     {% endif %}
-                </ul>
-                {% if user.is_authenticated %}
-                <p class="text-end m-3 text-white">You are logged in as <span class="text-success">{{ user.username }}</span></p>
-                {% else %}
-                <p class="text-end m-3 text-white">You are <span class="text-danger">not</span> logged in.</p>
-                {% endif %}
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+        {% if user.is_authenticated and user.is_staff or user.is_superuser %}
+        <nav id="staffNavbar" class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Staff/Management</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#staffNavbarContent" aria-controls="staffNavbarContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="staffNavbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'staff_dashboard' %}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'events_overview' %}">Manage Events</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        {% endif %}
+    </div>
     <main class="container mt-5 mb-5 main-content">
         {% block content %}
         {% endblock %}

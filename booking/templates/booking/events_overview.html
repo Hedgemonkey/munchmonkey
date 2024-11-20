@@ -1,0 +1,38 @@
+<!-- FILE: booking/templates/booking/events_overview.html -->
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "MunchMonkey - Events Overview" %}{% endblock title %}
+{% block description %}{% trans "Manage and organize your events" %}{% endblock description %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white text-center">
+            <h1 class="card-title mb-4">{% trans "Events Overview" %}</h1>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for event in events %}
+                <div class="col-md-4 mb-4">
+                    <a href="{% url 'edit_event' event.id %}" class="card-link">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="card-title">{{ event.location }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    {% trans "Start" %}: {{ event.start }}<br>
+                                    {% trans "Stop" %}: {{ event.stop }}
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
