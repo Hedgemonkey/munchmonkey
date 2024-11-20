@@ -59,3 +59,16 @@ def remove_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     event.delete()
     return redirect('events_overview')
+
+@login_required
+def remove_selected_events(request):
+    if request.method == 'POST':
+        print(f"POST data: {request.POST}")  # Debugging statement to print all POST data
+        event_ids = request.POST.getlist('selected_events[]')
+        print(f"Removing events with IDs: {event_ids}")  # Debugging statement
+        if event_ids:
+            Event.objects.filter(id__in=event_ids).delete()
+            print(f"Successfully removed events with IDs: {event_ids}")  # Debugging statement
+        else:
+            print("No event IDs received.")  # Debugging statement
+    return redirect('events_overview')
