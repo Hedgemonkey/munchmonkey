@@ -1,0 +1,34 @@
+/* FILE: booking/static/booking/css/datepicker_custom.css */
+
+.highlight {
+    background-color: #ffeb3b !important;
+    color: #000 !important;
+}
+
+.bordered-date {
+    border: 2px solid #007bff !important;
+}
+
+#datepicker-container .datepicker {
+    width: 100% !important;
+}
+
+/* Apply the site's font family */
+#datepicker-container,
+#id_location,
+#filter-form,
+.event-card {
+    font-family: 'Lora', serif; 
+    font-size: 1rem;
+}
+
+/* Additional styling to match the site's theme */
+#datepicker-container .datepicker table {
+    width: 100%;
+}
+
+#datepicker-container .datepicker table tr td,
+#datepicker-container .datepicker table tr th {
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+}

@@ -47,7 +47,7 @@
                     </li>
                     <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#">About</a></li>
                     <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#">Munch</a></li>
-                    <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#">Locations</a></li>
+                    <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'locations' %}">Locations</a></li>
                     <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#">Reservations</a></li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">

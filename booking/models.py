@@ -1,5 +1,6 @@
 # FILE: booking/models.py
 from django.db import models
+from django.utils import timezone
 from custom_auth.models import CustomUser  # Import CustomUser model
 
 class Event(models.Model):

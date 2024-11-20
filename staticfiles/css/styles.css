@@ -10878,11 +10878,11 @@ p {
 }
 .site-heading .site-heading-upper {
   display: block;
-  font-size: 2rem;
+  font-size: 5rem;
   font-weight: 800;
 }
 .site-heading .site-heading-lower {
-  font-size: 5rem;
+  font-size: 3rem;
   font-weight: 100;
   line-height: 4rem;
 }
@@ -11085,4 +11085,9 @@ p {
   background-color: rgba(var(--bs-primary-rgba));
   color: rgba(255, 255, 255, 0.9);
   border-color: rgba(230, 167, 86, 0.5);
+}
+
+/* Main conent */
+.main-content {
+  min-height: calc(100vh - 200px);
 }

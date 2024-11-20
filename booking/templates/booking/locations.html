@@ -1,0 +1,72 @@
+<!-- FILE: booking/templates/booking/locations.html -->
+
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Locations" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center text-white">{% trans "Locations" %}</h1>
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white text-center">
+            <h5 class="card-title">{% trans "Search/Select Locations" %}</h5>
+        </div>
+        <div class="card-body text-center">
+            <form method="get" class="row g-3 justify-content-center" id="filter-form">
+                <div class="col-md-4">
+                    <label for="id_location" class="form-label">{% trans "Select by Location" %}</label>
+                    <select name="location" id="id_location" class="form-select">
+                        <option value="">{% trans "All Locations" %}</option>
+                        {% for value, label in form.location.field.choices %}
+                            <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="id_date" class="form-label">{% trans "Select by Date" %}</label>
+                    <div id="datepicker-container"></div>
+                    <input type="hidden" id="id_date" name="date">
+                </div>
+                <div class="col-12">
+                    <button type="button" class="btn btn-secondary" id="reset-button">{% trans "Reset" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row" id="events-container">
+        {% for event in events %}
+            <div class="col-md-4 mb-4 event-card" data-location="{{ event.location }}" data-date="{{ event.start|date:"Y-m-d" }}">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title">{{ event.location }}</h5>
+                        <span class="badge bg-info">{{ event.start|date:"Y-m-d" }}</span>
+                    </div>
+                    <div class="card-body">
+                        <p>{% trans "Start" %}: {{ event.start }}</p>
+                        <p>{% trans "Stop" %}: {{ event.stop }}</p>
+                        <p>{% trans "Available Slots" %}: {{ event.available_slots }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+<link rel="stylesheet" href="{% static 'booking/css/datepicker_custom.css' %}">
+<script>
+    const availableDates = [
+        {% for event in events %}
+            "{{ event.start|date:"Y-m-d" }}",
+        {% endfor %}
+    ];
+</script>
+<script src="{% static 'booking/js/filter_events.js' %}"></script>
+<script src="{% static 'booking/js/datepicker_init.js' %}"></script>
+{% endblock %}
