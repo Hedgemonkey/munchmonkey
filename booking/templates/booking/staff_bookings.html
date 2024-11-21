@@ -18,31 +18,74 @@
             <h1 class="card-title mb-4">{% trans "Booking Requests" %}</h1>
         </div>
         <div class="card-body">
-            <table class="table table-striped table-hover table-bordered">
-                <thead>
-                    <tr>
-                        <th>{% trans "Event" %}</th>
-                        <th>{% trans "User" %}</th>
-                        <th>{% trans "Start Time" %}</th>
-                        <th>{% trans "End Time" %}</th>
-                        <th>{% trans "Guests" %}</th>
-                        <th>{% trans "Tables" %}</th>
-                        <th>{% trans "Available" %}</th>
-                        <th>{% trans "Confirmed" %}</th>
-                        <th>{% trans "Actions" %}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for booking in bookings %}
-                    <tr>
-                        <td>{{ booking.event.location }}</td>
-                        <td>{{ booking.user.username }}</td>
-                        <td>{{ booking.start_time }}</td>
-                        <td>{{ booking.end_time }}</td>
-                        <td class="text-center fw-bold">{{ booking.number_of_people }}</td>
-                        <td class="text-center fw-bold">{{ booking.number_of_people|tables_needed }}</td>
+            <div class="table-responsive d-none d-md-block">
+                <table class="table table-striped table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Event" %}</th>
+                            <th>{% trans "User" %}</th>
+                            <th>{% trans "Start Time" %}</th>
+                            <th class="d-none d-lg-table-cell">{% trans "End Time" %}</th>
+                            <th class="d-none d-lg-table-cell">{% trans "Guests" %}</th>
+                            <th class="d-none d-lg-table-cell">{% trans "Tables" %}</th>
+                            <th>{% trans "Available" %}</th>
+                            <th>{% trans "Confirmed" %}</th>
+                            <th>{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking.event.location }}</td>
+                            <td>{{ booking.user.username }}</td>
+                            <td>{{ booking.start_time }}</td>
+                            <td class="d-none d-lg-table-cell">{{ booking.end_time }}</td>
+                            <td class="text-center fw-bold d-none d-lg-table-cell">{{ booking.number_of_people }}</td>
+                            <td class="text-center fw-bold d-none d-lg-table-cell">{{ booking.number_of_people|tables_needed }}</td>
+                            {% is_slot_available booking.event booking.start_time booking.number_of_people as available %}
+                            <td class="text-center fw-bold {% if booking.confirmed or available >= booking.number_of_people|tables_needed %}bg-success{% else %}bg-danger{% endif %} text-white">
+                                {% if booking.confirmed %}
+                                <span>{% trans "Yes - Booked" %}</span>
+                                {% elif available >= booking.number_of_people|tables_needed %}
+                                <span>{% trans "Yes" %}</span>
+                                {% else %}
+                                <span>{% trans "No, only " %}{{ available }}{% trans " left" %}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center fw-bold {% if booking.confirmed %}bg-success{% else %}bg-danger{% endif %} text-white">
+                                {% if booking.confirmed %}
+                                <span>{% trans "Yes" %}</span>
+                                {% else %}
+                                <span>{% trans "No" %}</span>
+                                {% endif %}
+                            </td>
+                            <td class="p-0 action-cell">
+                                <div class="bg-primary">
+                                    <button type="button" class="btn btn-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#confirmBookingModal" data-booking-id="{{ booking.id }}">{% trans "Confirm/Reject" %}</button>
+                                </div>
+                                <div class="bg-secondary">
+                                    <button type="button" class="btn btn-secondary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#viewBookingModal" data-booking-id="{{ booking.id }}">{% trans "View" %}</button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-block d-md-none">
+                {% for booking in bookings %}
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">{{ booking.event.location }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>{% trans "User" %}:</strong> {{ booking.user.username }}</p>
+                        <p><strong>{% trans "Start Time" %}:</strong> {{ booking.start_time }}</p>
+                        <p><strong>{% trans "End Time" %}:</strong> {{ booking.end_time }}</p>
+                        <p><strong>{% trans "Guests" %}:</strong> {{ booking.number_of_people }}</p>
+                        <p><strong>{% trans "Tables" %}:</strong> {{ booking.number_of_people|tables_needed }}</p>
                         {% is_slot_available booking.event booking.start_time booking.number_of_people as available %}
-                        <td class="text-center fw-bold {% if booking.confirmed or available >= booking.number_of_people|tables_needed %}bg-success{% else %}bg-danger{% endif %} text-white">
+                        <p class="fw-bold {% if booking.confirmed or available >= booking.number_of_people|tables_needed %}bg-success{% else %}bg-danger{% endif %} text-white p-2">
                             {% if booking.confirmed %}
                             <span>{% trans "Yes - Booked" %}</span>
                             {% elif available >= booking.number_of_people|tables_needed %}
@@ -50,26 +93,22 @@
                             {% else %}
                             <span>{% trans "No, only " %}{{ available }}{% trans " left" %}</span>
                             {% endif %}
-                        </td>
-                        <td class="text-center fw-bold {% if booking.confirmed %}bg-success{% else %}bg-danger{% endif %} text-white">
+                        </p>
+                        <p class="fw-bold {% if booking.confirmed %}bg-success{% else %}bg-danger{% endif %} text-white p-2">
                             {% if booking.confirmed %}
                             <span>{% trans "Yes" %}</span>
                             {% else %}
                             <span>{% trans "No" %}</span>
                             {% endif %}
-                        </td>
-                        <td class="p-0 action-cell">
-                            <div class="bg-primary">
-                                <button type="button" class="btn btn-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#confirmBookingModal" data-booking-id="{{ booking.id }}">{% trans "Confirm/Reject" %}</button>
-                            </div>
-                            <div class="bg-secondary">
-                                <button type="button" class="btn btn-secondary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#viewBookingModal" data-booking-id="{{ booking.id }}">{% trans "View" %}</button>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                        </p>
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmBookingModal" data-booking-id="{{ booking.id }}">{% trans "Confirm/Reject" %}</button>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#viewBookingModal" data-booking-id="{{ booking.id }}">{% trans "View" %}</button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
             <a href="{% url 'add_booking' %}" class="btn btn-success">{% trans "Add New Booking" %}</a>
         </div>
     </div>

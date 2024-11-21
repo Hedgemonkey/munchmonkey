@@ -2,12 +2,16 @@
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Event, Booking
+from .models import Event, Booking, CustomUser
 from .forms import LocationFilterForm, EventForm, BookingForm, ConfirmBookingForm
 from datetime import timedelta, datetime
 from django.utils import timezone
 from django.http import JsonResponse
 import logging
+from django.views.decorators.csrf import csrf_exempt
+import random
+import string
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -120,13 +124,13 @@ def staff_bookings(request):
 @login_required
 def add_booking(request):
     events = Event.objects.all()
+    users = CustomUser.objects.all()
     if request.method == 'POST':
         print("Received POST request")
         form = BookingForm(request.POST)
         if form.is_valid():
             print("Form is valid")
             booking = form.save(commit=False)
-            booking.user = request.user  # Set the user field
             event = booking.event
             tables_needed = (booking.number_of_people + 3) // 4
             print(f"Tables needed: {tables_needed}")
@@ -144,7 +148,8 @@ def add_booking(request):
     else:
         print("Received GET request")
         form = BookingForm()
-    return render(request, 'booking/add_booking.html', {'form': form, 'events': events})
+    return render(request, 'booking/add_booking.html', {'form': form, 'events': events, 'users': users})
+
 @login_required
 def confirm_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
@@ -163,6 +168,7 @@ def confirm_booking(request, booking_id):
     else:
         form = ConfirmBookingForm(instance=booking)
     return render(request, 'booking/confirm_booking.html', {'form': form, 'booking': booking})
+
 @login_required
 def event_bookings(request, event_id):
     event = get_object_or_404(Event, id=event_id)
@@ -203,6 +209,37 @@ def view_booking(request, booking_id):
         'confirmed': booking.confirmed,
         'comments_user': booking.comments_user,
         'comments_staff': booking.comments_staff,
+        'user_phone': booking.user.phone_number,  # Assuming phone_number is a field in CustomUser model
+        'user_email': booking.user.email,  # Assuming email is a field in CustomUser model
     }
     print(f"Fetching booking {booking_id} with comments_staff: {booking.comments_staff}")
     return JsonResponse(booking_details)
+
+@csrf_exempt
+@login_required
+def create_user(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        first_name = data.get('first_name')
+        last_name = data.get('last_name')
+        phone = data.get('phone')
+        email = data.get('email')
+
+        if not first_name or not last_name or not phone:
+            return JsonResponse({'success': False, 'error': 'First name, last name, and phone number are required.'})
+
+        username = f"{first_name}{last_name}".lower()
+        while CustomUser.objects.filter(username=username).exists():
+            username = f"{first_name}{last_name}{''.join(random.choices(string.digits, k=4))}".lower()
+
+        user = CustomUser.objects.create(
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            phone_number=phone,
+            email=email
+        )
+
+        return JsonResponse({'success': True, 'user_id': user.id, 'username': user.username})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'})

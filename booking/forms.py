@@ -41,13 +41,14 @@ class EventForm(forms.ModelForm):
 class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
-        fields = ['event', 'start_time', 'number_of_people', 'comments_user', 'comments_staff']
+        fields = ['event', 'start_time', 'number_of_people', 'comments_user', 'comments_staff', 'user']
         widgets = {
             'event': forms.Select(attrs={'class': 'form-select'}),
             'start_time': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
             'number_of_people': forms.NumberInput(attrs={'class': 'form-control'}),
             'comments_user': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'comments_staff': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'user': forms.Select(attrs={'class': 'form-select'}),
         }
 
 class ConfirmBookingForm(forms.ModelForm):

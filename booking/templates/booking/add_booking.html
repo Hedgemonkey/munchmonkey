@@ -24,6 +24,35 @@
                         {% endfor %}
                     </select>
                 </div>
+                <div class="mb-3">
+                    <label for="id_user" class="form-label">{% trans "User" %}</label>
+                    <select id="id_user" name="user" class="form-select">
+                        <option value="">{% trans "Select a user" %}</option>
+                        {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="btn btn-link" id="create-user-btn">{% trans "Create New User" %}</button>
+                </div>
+                <div id="new-user-fields" style="display: none;">
+                    <div class="mb-3">
+                        <label for="new_user_first_name" class="form-label">{% trans "First Name" %}</label>
+                        <input type="text" id="new_user_first_name" name="new_user_first_name" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_user_last_name" class="form-label">{% trans "Last Name" %}</label>
+                        <input type="text" id="new_user_last_name" name="new_user_last_name" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_user_phone" class="form-label">{% trans "Phone Number" %}</label>
+                        <input type="text" id="new_user_phone" name="new_user_phone" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_user_email" class="form-label">{% trans "Email Address" %}</label>
+                        <input type="email" id="new_user_email" name="new_user_email" class="form-control">
+                    </div>
+                    <button type="button" class="btn btn-primary" id="save-new-user-btn">{% trans "Save User" %}</button>
+                </div>
                 <div id="date-time-fields" style="display: none;">
                     <div class="mb-3">
                         <label for="id_start_time" class="form-label">{% trans "Start Time" %}</label>
