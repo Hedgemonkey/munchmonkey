@@ -4,36 +4,55 @@
 {% load i18n %}
 
 {% block title %}{% trans "Edit Event" %}{% endblock title %}
-{% block description %}{% trans "Edit and manage the selected event" %}{% endblock description %}
+{% block description %}{% trans "Edit the details of your event" %}{% endblock description %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'booking/css/booking_styles.css' %}">
+{% endblock styles %}
 
 {% block content %}
 <div class="container mt-4">
-    <div class="card">
+    <div class="card mb-4">
         <div class="card-header bg-primary text-white text-center">
             <h1 class="card-title mb-4">{% trans "Edit Event" %}</h1>
         </div>
         <div class="card-body">
             <form method="post" action="{% url 'save_event' event.id %}">
                 {% csrf_token %}
-                <div class="mb-3">
-                    <label for="location" class="form-label">{% trans "Location" %}</label>
-                    <input type="text" class="form-control" id="location" name="location" value="{{ event.location }}" required>
+                {{ form.as_p }}
+                <div class="card-footer p-0 d-flex">
+                    <button type="submit" class="btn btn-primary btn-sm w-50 m-0 rounded-0">{% trans "Save" %}</button>
+                    <button type="button" class="btn btn-danger btn-sm w-50 m-0 rounded-0" data-bs-toggle="modal" data-bs-target="#confirmRemoveModal">{% trans "Remove" %}</button>
                 </div>
-                <div class="mb-3">
-                    <label for="start" class="form-label">{% trans "Start" %}</label>
-                    <input type="datetime-local" class="form-control" id="start" name="start" value="{{ event.start|date:'Y-m-d\TH:i' }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="stop" class="form-label">{% trans "Stop" %}</label>
-                    <input type="datetime-local" class="form-control" id="stop" name="stop" value="{{ event.stop|date:'Y-m-d\TH:i' }}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">{% trans "Available Slots" %}</label>
-                    <p class="form-control-plaintext">{{ available_slots }}</p>
-                </div>
-                <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
             </form>
         </div>
     </div>
 </div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmRemoveModal" tabindex="-1" aria-labelledby="confirmRemoveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="confirmRemoveModalLabel">{% trans "Confirm Removal" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Are you sure you want to remove this event?" %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                <form method="post" action="{% url 'remove_event' event.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">{% trans "Remove" %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'booking/js/edit_event.js' %}"></script>
+{% endblock scripts %}

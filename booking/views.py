@@ -43,8 +43,15 @@ def add_event(request):
 @login_required
 def edit_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
+    if request.method == 'POST':
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('events_overview')
+    else:
+        form = EventForm(instance=event)
     available_slots = event.available_slots()
-    return render(request, 'booking/edit_event.html', {'event': event, 'available_slots': available_slots})
+    return render(request, 'booking/edit_event.html', {'form': form, 'event': event, 'available_slots': available_slots})
 
 @login_required
 def save_event(request, event_id):

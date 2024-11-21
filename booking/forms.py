@@ -30,6 +30,9 @@ class EventForm(forms.ModelForm):
         model = Event
         fields = ['location', 'address', 'start', 'stop', 'info']
         widgets = {
-            'start': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-            'stop': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'location': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'start': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+            'stop': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+            'info': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
