@@ -8,13 +8,23 @@
 {% block description %}{% trans "Manage booking requests and current bookings" %}{% endblock description %}
 
 {% block content %}
+<style>
+    .table td, .table th {
+        vertical-align: middle;
+    }
+    .btn-full-height {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+</style>
 <div class="container mt-4">
     <div class="card mb-4">
         <div class="card-header bg-primary text-white text-center">
             <h1 class="card-title mb-4">{% trans "Booking Requests" %}</h1>
         </div>
         <div class="card-body">
-            <table class="table table-bordered">
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>{% trans "Event" %}</th>
@@ -35,20 +45,28 @@
                         <td>{{ booking.user.username }}</td>
                         <td>{{ booking.start_time }}</td>
                         <td>{{ booking.end_time }}</td>
-                        <td>{{ booking.number_of_people }}</td>
-                        <td>{{ booking.number_of_people|tables_needed }}</td>
-                        <td>
-                            {% is_slot_available booking.event booking.start_time booking.number_of_people as available %}
+                        <td class="text-center fw-bold">{{ booking.number_of_people }}</td>
+                        <td class="text-center fw-bold">{{ booking.number_of_people|tables_needed }}</td>
+                        {% is_slot_available booking.event booking.start_time booking.number_of_people as available %}
+                        <td class="text-center fw-bold {% if available %}bg-success{% else %}bg-danger{% endif %} text-white">
                             {% if available %}
-                            <span class="badge bg-success">{% trans "Yes" %}</span>
+                            <span>{% trans "Yes" %}</span>
                             {% else %}
-                            <span class="badge bg-danger">{% trans "No" %}</span>
+                            <span>{% trans "No" %}</span>
                             {% endif %}
                         </td>
-                        <td>{{ booking.confirmed }}</td>
-                        <td>
-                            <a href="{% url 'confirm_booking' booking.id %}" class="btn btn-primary btn-sm">{% trans "Confirm/Reject" %}</a>
-                            <a href="{% url 'view_booking' booking.id %}" class="btn btn-secondary btn-sm">{% trans "View" %}</a>
+                        <td class="text-center fw-bold {% if booking.confirmed %}bg-success{% else %}bg-danger{% endif %} text-white">
+                            {% if booking.confirmed %}
+                            <span>{% trans "Yes" %}</span>
+                            {% else %}
+                            <span>{% trans "No" %}</span>
+                            {% endif %}
+                        </td>
+                        <td class="p-0">
+                            <div class="d-grid gap-0">
+                                <button type="button" class="btn btn-primary btn-sm w-100 rounded-0 btn-full-height" data-bs-toggle="modal" data-bs-target="#confirmBookingModal" data-booking-id="{{ booking.id }}">{% trans "Confirm/Reject" %}</button>
+                                <button type="button" class="btn btn-secondary btn-sm w-100 rounded-0 btn-full-height" data-bs-toggle="modal" data-bs-target="#viewBookingModal" data-booking-id="{{ booking.id }}">{% trans "View" %}</button>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -58,4 +76,68 @@
         </div>
     </div>
 </div>
+
+<!-- Confirm Booking Modal -->
+<div class="modal fade" id="confirmBookingModal" tabindex="-1" aria-labelledby="confirmBookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="confirmBookingModalLabel">{% trans "Confirm/Reject Booking" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="confirm-booking-form" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="confirm-booking-confirmed" class="form-label">{% trans "Confirmed" %}</label>
+                        <select id="confirm-booking-confirmed" name="confirmed" class="form-select">
+                            <option value="true">{% trans "Yes" %}</option>
+                            <option value="false">{% trans "No" %}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm-booking-comments-staff" class="form-label">{% trans "Staff Comments" %}</label>
+                        <textarea id="confirm-booking-comments-staff" name="comments_staff" class="form-control"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Booking Modal -->
+<div class="modal fade" id="viewBookingModal" tabindex="-1" aria-labelledby="viewBookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="viewBookingModalLabel">{% trans "Booking Details" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <p><strong>{% trans "Event" %}:</strong> <span id="booking-event"></span></p>
+                        <p><strong>{% trans "User" %}:</strong> <span id="booking-user"></span></p>
+                        <p><strong>{% trans "Start Time" %}:</strong> <span id="booking-start-time"></span></p>
+                        <p><strong>{% trans "End Time" %}:</strong> <span id="booking-end-time"></span></p>
+                        <p><strong>{% trans "Guests" %}:</strong> <span id="booking-guests"></span></p>
+                        <p><strong>{% trans "Confirmed" %}:</strong> <span id="booking-confirmed"></span></p>
+                        <p><strong>{% trans "User Comments" %}:</strong> <span id="booking-comments-user"></span></p>
+                        <p><strong>{% trans "Staff Comments" %}:</strong> <span id="booking-comments-staff"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'booking/js/view_booking.js' %}"></script>
+<script src="{% static 'booking/js/confirm_booking.js' %}"></script>
+{% endblock scripts %}

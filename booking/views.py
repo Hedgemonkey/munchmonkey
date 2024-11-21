@@ -149,15 +149,20 @@ def add_booking(request):
 def confirm_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
     if request.method == 'POST':
+        print("Received POST request with data:", request.POST)
         form = ConfirmBookingForm(request.POST, instance=booking)
         if form.is_valid():
             booking.confirmed = form.cleaned_data['confirmed']
+            booking.comments_staff = form.cleaned_data.get('comments_staff', '')
+            print(f"Updating booking {booking_id} with comments_staff: {booking.comments_staff}")
             booking.save()
             return redirect('staff_bookings')
+        else:
+            print("Form is not valid")
+            print(form.errors)
     else:
         form = ConfirmBookingForm(instance=booking)
     return render(request, 'booking/confirm_booking.html', {'form': form, 'booking': booking})
-
 @login_required
 def event_bookings(request, event_id):
     event = get_object_or_404(Event, id=event_id)
@@ -185,3 +190,19 @@ def available_slots(request):
             'available': event.get_available_tables(slot) > 0
         })
     return JsonResponse({'available_slots': slots})
+
+@login_required
+def view_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    booking_details = {
+        'event': booking.event.location,
+        'user': booking.user.username,
+        'start_time': booking.start_time.strftime('%Y-%m-%d %H:%M'),
+        'end_time': booking.end_time.strftime('%Y-%m-%d %H:%M'),
+        'number_of_people': booking.number_of_people,
+        'confirmed': booking.confirmed,
+        'comments_user': booking.comments_user,
+        'comments_staff': booking.comments_staff,
+    }
+    print(f"Fetching booking {booking_id} with comments_staff: {booking.comments_staff}")
+    return JsonResponse(booking_details)

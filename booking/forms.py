@@ -53,4 +53,4 @@ class ConfirmBookingForm(forms.ModelForm):
 
     class Meta:
         model = Booking
-        fields = ['confirmed']
+        fields = ['confirmed', 'comments_staff']

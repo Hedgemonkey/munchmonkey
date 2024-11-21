@@ -1,3 +1,5 @@
+// FILE: booking/static/booking/js/add_booking.js
+
 document.addEventListener('DOMContentLoaded', function() {
     const eventSelect = document.getElementById('id_event');
     const dateTimeFields = document.getElementById('date-time-fields');

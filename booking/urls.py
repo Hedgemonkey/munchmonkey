@@ -18,6 +18,7 @@ urlpatterns = [
     path('staff/bookings/add/', views.add_booking, name='add_booking'),
     path('staff/bookings/confirm/<int:booking_id>/', views.confirm_booking, name='confirm_booking'),
     path('staff/bookings/event/<int:event_id>/', views.event_bookings, name='event_bookings'),
+    path('staff/view_booking/<int:booking_id>/', views.view_booking, name='view_booking'),
     # API endpoint for available slots
     path('api/available_slots/', views.available_slots, name='available_slots'),
 ]
