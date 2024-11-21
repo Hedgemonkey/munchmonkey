@@ -8,6 +8,8 @@ class Event(models.Model):
     start = models.DateTimeField()  # Start field of type DateTime
     stop = models.DateTimeField()  # Stop field of type DateTime
     location = models.CharField(max_length=255)  # Location field of type CharField
+    address = models.CharField(max_length=255, blank=True, null=True)  # Address field of type CharField
+    info = models.TextField(blank=True, null=True)  # Information field of type TextField
 
     def __str__(self):
         return f"Event {self.id} at {self.location} from {self.start} to {self.stop}"

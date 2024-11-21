@@ -3,7 +3,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Event
-from .forms import LocationFilterForm
+from .forms import LocationFilterForm, EventForm
 
 def locations(request):
     form = LocationFilterForm(request.GET or None)
@@ -26,17 +26,19 @@ def staff_dashboard(request):
 @login_required
 def events_overview(request):
     events = Event.objects.all().order_by('start')
-    return render(request, 'booking/events_overview.html', {'events': events})
+    form = EventForm()
+    return render(request, 'booking/events_overview.html', {'events': events, 'form': form})
 
 @login_required
 def add_event(request):
     if request.method == 'POST':
-        location = request.POST.get('location')
-        start = request.POST.get('start')
-        stop = request.POST.get('stop')
-        Event.objects.create(location=location, start=start, stop=stop)
-        return redirect('events_overview')
-    return render(request, 'booking/add_event.html')
+        form = EventForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('events_overview')
+    else:
+        form = EventForm()
+    return render(request, 'booking/add_event.html', {'form': form})
 
 @login_required
 def edit_event(request, event_id):

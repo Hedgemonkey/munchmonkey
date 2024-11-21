@@ -19,7 +19,7 @@
         <div class="card-body">
             <p class="text-center">{% trans "This page allows you to manage and organize your events. You can add new events, edit existing ones, or remove them as needed." %}</p>
             <div class="d-flex justify-content-around mb-4">
-                <a href="{% url 'add_event' %}" class="btn btn-success">{% trans "Add Event" %}</a>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addEventModal">{% trans "Add Event" %}</button>
                 <button id="remove-selected" class="btn btn-danger" disabled>{% trans "Remove Selected Events" %}</button>
             </div>
             <hr>
@@ -35,7 +35,10 @@
                             <div class="card-body">
                                 <p class="card-text">
                                     {% trans "Start" %}: {{ event.start }}<br>
-                                    {% trans "Stop" %}: {{ event.stop }}
+                                    {% trans "Stop" %}: {{ event.stop }}<br>
+                                    {% trans "Available Slots" %}: {{ event.available_slots }}<br>
+                                    {% trans "Address" %}: {{ event.address }}<br>
+                                    {% trans "Info" %}: {{ event.info }}
                                 </p>
                             </div>
                             <div class="card-footer p-0 d-flex">
@@ -53,6 +56,25 @@
                     {% endfor %}
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Event Modal -->
+<div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addEventModalLabel">{% trans "Add Event" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-event-form" method="post" action="{% url 'add_event' %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">{% trans "Add Event" %}</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

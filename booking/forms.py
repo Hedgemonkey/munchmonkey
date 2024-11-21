@@ -24,3 +24,12 @@ class LocationFilterForm(forms.Form):
             (loc, loc) for loc in Event.objects.values_list('location', flat=True).distinct()
         ]
         self.fields['location'].choices = location_choices
+
+class EventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ['location', 'address', 'start', 'stop', 'info']
+        widgets = {
+            'start': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'stop': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
