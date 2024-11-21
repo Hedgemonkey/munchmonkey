@@ -6,6 +6,10 @@ from .models import Event, Booking
 from .forms import LocationFilterForm, EventForm, BookingForm, ConfirmBookingForm
 from datetime import timedelta, datetime
 from django.utils import timezone
+from django.http import JsonResponse
+import logging
+
+logger = logging.getLogger(__name__)
 
 def locations(request):
     form = LocationFilterForm(request.GET or None)
@@ -115,22 +119,32 @@ def staff_bookings(request):
 
 @login_required
 def add_booking(request):
+    events = Event.objects.all()
     if request.method == 'POST':
+        print("Received POST request")
         form = BookingForm(request.POST)
         if form.is_valid():
+            print("Form is valid")
             booking = form.save(commit=False)
+            booking.user = request.user  # Set the user field
             event = booking.event
             tables_needed = (booking.number_of_people + 3) // 4
+            print(f"Tables needed: {tables_needed}")
             if event.get_available_tables(booking.start_time) >= tables_needed:
                 booking.end_time = booking.start_time + timedelta(minutes=44)
                 booking.save()
+                print(f"Booking added: {booking}")
                 return redirect('staff_bookings')
             else:
+                print("Not enough available tables for this booking")
                 form.add_error(None, 'Not enough available tables for this booking.')
+        else:
+            print("Form is not valid")
+            print(form.errors)
     else:
+        print("Received GET request")
         form = BookingForm()
-    return render(request, 'booking/add_booking.html', {'form': form})
-
+    return render(request, 'booking/add_booking.html', {'form': form, 'events': events})
 @login_required
 def confirm_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
@@ -158,3 +172,16 @@ def event_bookings(request, event_id):
         'booking_requests': booking_requests,
         'available_slots': available_slots
     })
+
+@login_required
+def available_slots(request):
+    event_id = request.GET.get('event_id')
+    event = get_object_or_404(Event, id=event_id)
+    available_slots = event.calculate_available_slots()
+    slots = []
+    for slot in available_slots:
+        slots.append({
+            'time': slot.strftime('%Y-%m-%d %H:%M'),
+            'available': event.get_available_tables(slot) > 0
+        })
+    return JsonResponse({'available_slots': slots})

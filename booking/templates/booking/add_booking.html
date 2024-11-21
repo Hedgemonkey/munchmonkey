@@ -13,12 +13,36 @@
             <h1 class="card-title mb-4">{% trans "Add Booking" %}</h1>
         </div>
         <div class="card-body">
-            <form method="post">
+            <form method="post" id="booking-form">
                 {% csrf_token %}
-                {{ form.as_p }}
+                <div class="mb-3">
+                    <label for="id_event" class="form-label">{% trans "Event" %}</label>
+                    <select id="id_event" name="event" class="form-select">
+                        <option value="">{% trans "Select an event" %}</option>
+                        {% for event in events %}
+                        <option value="{{ event.id }}">{{ event.location }} - {{ event.start|date:"Y-m-d H:i" }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="date-time-fields" style="display: none;">
+                    <div class="mb-3">
+                        <label for="id_start_time" class="form-label">{% trans "Start Time" %}</label>
+                        <select id="id_start_time" name="start_time" class="form-select">
+                            <option value="">{% trans "Select a time" %}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="number_of_people" class="form-label">{% trans "Number of People" %}</label>
+                        <input type="number" id="number_of_people" name="number_of_people" class="form-control">
+                    </div>
+                </div>
                 <button type="submit" class="btn btn-primary">{% trans "Add Booking" %}</button>
             </form>
         </div>
     </div>
 </div>
 {% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'booking/js/add_booking.js' %}"></script>
+{% endblock scripts %}

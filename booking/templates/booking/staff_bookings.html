@@ -2,9 +2,10 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
+{% load custom_filters %}
 
 {% block title %}{% trans "Staff Bookings" %}{% endblock title %}
-{% block description %}{% trans "Manage bookings" %}{% endblock description %}
+{% block description %}{% trans "Manage booking requests and current bookings" %}{% endblock description %}
 
 {% block content %}
 <div class="container mt-4">
@@ -20,7 +21,9 @@
                         <th>{% trans "User" %}</th>
                         <th>{% trans "Start Time" %}</th>
                         <th>{% trans "End Time" %}</th>
-                        <th>{% trans "Number of People" %}</th>
+                        <th>{% trans "Guests" %}</th>
+                        <th>{% trans "Tables" %}</th>
+                        <th>{% trans "Available" %}</th>
                         <th>{% trans "Confirmed" %}</th>
                         <th>{% trans "Actions" %}</th>
                     </tr>
@@ -33,9 +36,19 @@
                         <td>{{ booking.start_time }}</td>
                         <td>{{ booking.end_time }}</td>
                         <td>{{ booking.number_of_people }}</td>
+                        <td>{{ booking.number_of_people|tables_needed }}</td>
+                        <td>
+                            {% is_slot_available booking.event booking.start_time booking.number_of_people as available %}
+                            {% if available %}
+                            <span class="badge bg-success">{% trans "Yes" %}</span>
+                            {% else %}
+                            <span class="badge bg-danger">{% trans "No" %}</span>
+                            {% endif %}
+                        </td>
                         <td>{{ booking.confirmed }}</td>
                         <td>
                             <a href="{% url 'confirm_booking' booking.id %}" class="btn btn-primary btn-sm">{% trans "Confirm/Reject" %}</a>
+                            <a href="{% url 'view_booking' booking.id %}" class="btn btn-secondary btn-sm">{% trans "View" %}</a>
                         </td>
                     </tr>
                     {% endfor %}

@@ -54,6 +54,3 @@ class ConfirmBookingForm(forms.ModelForm):
     class Meta:
         model = Booking
         fields = ['confirmed']
-        widgets = {
-            'confirmed': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-        }
