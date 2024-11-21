@@ -1,0 +1,48 @@
+<!-- FILE: booking/templates/booking/staff_bookings.html -->
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Staff Bookings" %}{% endblock title %}
+{% block description %}{% trans "Manage bookings" %}{% endblock description %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white text-center">
+            <h1 class="card-title mb-4">{% trans "Booking Requests" %}</h1>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>{% trans "Event" %}</th>
+                        <th>{% trans "User" %}</th>
+                        <th>{% trans "Start Time" %}</th>
+                        <th>{% trans "End Time" %}</th>
+                        <th>{% trans "Number of People" %}</th>
+                        <th>{% trans "Confirmed" %}</th>
+                        <th>{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.event.location }}</td>
+                        <td>{{ booking.user.username }}</td>
+                        <td>{{ booking.start_time }}</td>
+                        <td>{{ booking.end_time }}</td>
+                        <td>{{ booking.number_of_people }}</td>
+                        <td>{{ booking.confirmed }}</td>
+                        <td>
+                            <a href="{% url 'confirm_booking' booking.id %}" class="btn btn-primary btn-sm">{% trans "Confirm/Reject" %}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'add_booking' %}" class="btn btn-success">{% trans "Add New Booking" %}</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -14,7 +14,10 @@ urlpatterns = [
     path('staff/events/<int:event_id>/edit/', views.edit_event, name='edit_event'),
     path('staff/events/<int:event_id>/remove/', views.remove_event, name='remove_event'),
     path('staff/events/remove_selected/', views.remove_selected_events, name='remove_selected_events'),
-    # other URL patterns
+    path('staff/bookings/', views.staff_bookings, name='staff_bookings'),
+    path('staff/bookings/add/', views.add_booking, name='add_booking'),
+    path('staff/bookings/confirm/<int:booking_id>/', views.confirm_booking, name='confirm_booking'),
+    path('staff/bookings/event/<int:event_id>/', views.event_bookings, name='event_bookings'),
 ]
 
 if settings.DEBUG:

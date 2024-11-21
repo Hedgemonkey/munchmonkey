@@ -3,7 +3,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Event, Booking
-from .forms import LocationFilterForm, EventForm
+from .forms import LocationFilterForm, EventForm, BookingForm, ConfirmBookingForm
 from datetime import timedelta, datetime
 from django.utils import timezone
 
@@ -107,3 +107,54 @@ def book_slot(request, event_id):
             return render(request, 'booking/book_slot.html', {'event': event, 'error': 'Not enough available tables for this booking.'})
     available_slots = event.calculate_available_slots()
     return render(request, 'booking/book_slot.html', {'event': event, 'available_slots': available_slots})
+
+@login_required
+def staff_bookings(request):
+    bookings = Booking.objects.all().order_by('start_time')
+    return render(request, 'booking/staff_bookings.html', {'bookings': bookings})
+
+@login_required
+def add_booking(request):
+    if request.method == 'POST':
+        form = BookingForm(request.POST)
+        if form.is_valid():
+            booking = form.save(commit=False)
+            event = booking.event
+            tables_needed = (booking.number_of_people + 3) // 4
+            if event.get_available_tables(booking.start_time) >= tables_needed:
+                booking.end_time = booking.start_time + timedelta(minutes=44)
+                booking.save()
+                return redirect('staff_bookings')
+            else:
+                form.add_error(None, 'Not enough available tables for this booking.')
+    else:
+        form = BookingForm()
+    return render(request, 'booking/add_booking.html', {'form': form})
+
+@login_required
+def confirm_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    if request.method == 'POST':
+        form = ConfirmBookingForm(request.POST, instance=booking)
+        if form.is_valid():
+            booking.confirmed = form.cleaned_data['confirmed']
+            booking.save()
+            return redirect('staff_bookings')
+    else:
+        form = ConfirmBookingForm(instance=booking)
+    return render(request, 'booking/confirm_booking.html', {'form': form, 'booking': booking})
+
+@login_required
+def event_bookings(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    bookings = Booking.objects.filter(event=event).order_by('start_time')
+    confirmed_bookings = bookings.filter(confirmed=True).count()
+    booking_requests = bookings.filter(confirmed=False).count()
+    available_slots = len(event.calculate_available_slots())
+    return render(request, 'booking/event_bookings.html', {
+        'event': event,
+        'bookings': bookings,
+        'confirmed_bookings': confirmed_bookings,
+        'booking_requests': booking_requests,
+        'available_slots': available_slots
+    })

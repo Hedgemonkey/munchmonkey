@@ -1,7 +1,7 @@
 # FILE: booking/forms.py
 
 from django import forms
-from .models import Event
+from .models import Event, Booking
 
 class LocationFilterForm(forms.Form):
     ALL_LOCATIONS = [('', 'All Locations')]
@@ -36,4 +36,24 @@ class EventForm(forms.ModelForm):
             'stop': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
             'info': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'event_tables': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+class BookingForm(forms.ModelForm):
+    class Meta:
+        model = Booking
+        fields = ['event', 'start_time', 'number_of_people']
+        widgets = {
+            'event': forms.Select(attrs={'class': 'form-control'}),
+            'start_time': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+            'number_of_people': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+class ConfirmBookingForm(forms.ModelForm):
+    confirmed = forms.BooleanField(required=False)
+
+    class Meta:
+        model = Booking
+        fields = ['confirmed']
+        widgets = {
+            'confirmed': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
