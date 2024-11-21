@@ -13,16 +13,16 @@ $(document).ready(function() {
         console.log('Selected events:', selectedEvents);  // Debugging statement
     }
 
+    $('.event-card form').on('click', function(event) {
+        event.stopPropagation();
+    });
+
     $('.event-card').on('click', function() {
         const checkbox = $(this).find('.event-checkbox');
         checkbox.prop('checked', !checkbox.prop('checked'));
         $(this).toggleClass('border-selected', checkbox.prop('checked'));
         updateRemoveButtonState();
         printSelectedEvents();  // Print selected events to console
-    });
-
-    $('.event-card form').on('click', function(event) {
-        event.stopPropagation();
     });
 
     $('#remove-selected').on('click', function() {
