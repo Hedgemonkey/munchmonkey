@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fetchAvailableSlots(eventSelect.value);
         } else {
             dateTimeFields.style.display = 'none';
-            startTimeSelect.innerHTML = '<option value="">{% trans "Select a time" %}</option>';
+            startTimeSelect.innerHTML = '<option value="">Select a time</option>';
         }
     });
 
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(`/api/available_slots/?event_id=${eventId}`)
             .then(response => response.json())
             .then(data => {
-                startTimeSelect.innerHTML = '<option value="">{% trans "Select a time" %}</option>';
+                startTimeSelect.innerHTML = '<option value="">Select a time</option>';
                 data.available_slots.forEach(slot => {
                     const option = document.createElement('option');
                     option.value = slot.time;

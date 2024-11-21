@@ -25,11 +25,12 @@ class Event(models.Model):
         return slots
 
     def get_available_tables(self, slot):
-    # Check for bookings that start 30 minutes before to 30 minutes after the slot
+        # Check for confirmed bookings that start 30 minutes before to 30 minutes after the slot
         overlapping_bookings = Booking.objects.filter(
             event=self,
             start_time__gte=slot - timedelta(minutes=30),
-            start_time__lt=slot + timedelta(minutes=45)
+            start_time__lt=slot + timedelta(minutes=45),
+            confirmed=True  # Only count confirmed bookings
         )
         tables_occupied = sum((booking.number_of_people + 3) // 4 for booking in overlapping_bookings)
         available_tables = self.event_tables - tables_occupied
@@ -63,3 +64,6 @@ class Booking(models.Model):
                 if self.event.get_available_tables(slot) < tables_needed:
                     raise ValueError("Not enough available tables for this booking.")
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Booking {self.id} for {self.event.location} by {self.user.username}"

@@ -35,6 +35,14 @@
                         <label for="number_of_people" class="form-label">{% trans "Number of People" %}</label>
                         <input type="number" id="number_of_people" name="number_of_people" class="form-control">
                     </div>
+                    <div class="mb-3">
+                        <label for="comments_user" class="form-label">{% trans "User Comments" %}</label>
+                        <textarea id="comments_user" name="comments_user" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="comments_staff" class="form-label">{% trans "Staff Comments" %}</label>
+                        <textarea id="comments_staff" name="comments_staff" class="form-control" rows="3"></textarea>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary">{% trans "Add Booking" %}</button>
             </form>
