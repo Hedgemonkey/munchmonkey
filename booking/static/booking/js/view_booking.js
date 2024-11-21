@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 document.getElementById('booking-event').textContent = data.event;
                 document.getElementById('booking-user').textContent = data.user;
+                document.getElementById('booking-user-phone').textContent = data.user_phone;
+                document.getElementById('booking-user-email').textContent = data.user_email;
                 document.getElementById('booking-start-time').textContent = data.start_time;
                 document.getElementById('booking-end-time').textContent = data.end_time;
                 document.getElementById('booking-guests').textContent = data.number_of_people;

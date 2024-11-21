@@ -1,5 +1,3 @@
-// FILE: booking/static/booking/js/add_booking.js
-
 document.addEventListener('DOMContentLoaded', function() {
     const eventSelect = document.getElementById('id_event');
     const dateTimeFields = document.getElementById('date-time-fields');
@@ -67,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 data.available_slots.forEach(slot => {
                     const option = document.createElement('option');
                     option.value = slot.time;
-                    option.textContent = slot.time;
+                    option.textContent = `${slot.time} (${slot.available_tables} tables available)`;
                     option.className = slot.available ? 'bg-success text-white' : 'bg-danger text-white';
                     option.disabled = !slot.available;
                     startTimeSelect.appendChild(option);

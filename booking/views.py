@@ -9,6 +9,8 @@ from django.utils import timezone
 from django.http import JsonResponse
 import logging
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
+from .models import Event
 import random
 import string
 import json
@@ -184,18 +186,22 @@ def event_bookings(request, event_id):
         'available_slots': available_slots
     })
 
-@login_required
+@require_GET
 def available_slots(request):
     event_id = request.GET.get('event_id')
     event = get_object_or_404(Event, id=event_id)
-    available_slots = event.calculate_available_slots()
-    slots = []
-    for slot in available_slots:
-        slots.append({
+    slots = event.calculate_available_slots()
+    available_slots = []
+
+    for slot in slots:
+        available_tables = event.get_available_tables(slot)
+        available_slots.append({
             'time': slot.strftime('%Y-%m-%d %H:%M'),
-            'available': event.get_available_tables(slot) > 0
+            'available_tables': available_tables,
+            'available': available_tables > 0
         })
-    return JsonResponse({'available_slots': slots})
+
+    return JsonResponse({'available_slots': available_slots})
 
 @login_required
 def view_booking(request, booking_id):
@@ -212,7 +218,6 @@ def view_booking(request, booking_id):
         'user_phone': booking.user.phone_number,  # Assuming phone_number is a field in CustomUser model
         'user_email': booking.user.email,  # Assuming email is a field in CustomUser model
     }
-    print(f"Fetching booking {booking_id} with comments_staff: {booking.comments_staff}")
     return JsonResponse(booking_details)
 
 @csrf_exempt
