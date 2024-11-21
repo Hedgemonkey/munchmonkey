@@ -18,13 +18,12 @@
         </div>
         <div class="card-body">
             <p class="text-center">
-                {% blocktrans %} This page allows you to manage and organize your events. You can add new events, edit
-                existing ones, or remove them as needed. {% endblocktrans %}
+                {% blocktrans %} This page allows you to manage and organize your events. You can add new events, edit existing ones, or remove them as needed. {% endblocktrans %}
             </p>
             <div class="d-flex justify-content-around mb-4">
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addEventModal">
                     {% trans "Add Event" %}</button>
-                <button id="remove-selected" class="btn btn-danger" disabled>
+                <button id="remove-selected" class="btn btn-danger" disabled data-bs-toggle="modal" data-bs-target="#confirmRemoveModal">
                     {% trans "Remove Selected Events" %}</button>
             </div>
             <hr>
@@ -45,16 +44,13 @@
                             </p>
                         </div>
                         <div class="card-footer p-0 d-flex">
-                            <input type="checkbox" class="form-check-input event-checkbox" name="selected_events"
-                                value="{{ event.id }}" hidden>
+                            <input type="checkbox" class="form-check-input event-checkbox" name="selected_events" value="{{ event.id }}" hidden>
                             <form method="get" action="{% url 'edit_event' event.id %}" class="w-50 m-0">
-                                <button type="submit" class="btn btn-secondary btn-sm w-100 rounded-0">
-                                    {% trans "Edit" %}</button>
+                                <button type="submit" class="btn btn-secondary btn-sm w-100 rounded-0">{% trans "Edit" %}</button>
                             </form>
                             <form method="post" action="{% url 'remove_event' event.id %}" class="w-50 m-0">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-danger btn-sm w-100 rounded-0">
-                                    {% trans "Remove" %}</button>
+                                <button type="button" class="btn btn-danger btn-sm w-100 rounded-0" data-bs-toggle="modal" data-bs-target="#confirmRemoveModal" data-event-id="{{ event.id }}">{% trans "Remove" %}</button>
                             </form>
                         </div>
                     </div>
@@ -83,9 +79,31 @@
         </div>
     </div>
 </div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmRemoveModal" tabindex="-1" aria-labelledby="confirmRemoveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="confirmRemoveModalLabel">{% trans "Confirm Removal" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Are you sure you want to remove the selected event(s)?" %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                <button type="button" class="btn btn-danger" id="confirm-remove-btn">{% trans "Remove" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
 
 {% block scripts %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    const removeSelectedEventsUrl = "{% url 'remove_selected_events' %}";
+</script>
 <script src="{% static 'booking/js/events_overview.js' %}"></script>
 {% endblock scripts %}

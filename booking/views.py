@@ -66,7 +66,7 @@ def remove_event(request, event_id):
 def remove_selected_events(request):
     if request.method == 'POST':
         print(f"POST data: {request.POST}")  # Debugging statement to print all POST data
-        event_ids = request.POST.getlist('selected_events[]')
+        event_ids = request.POST.getlist('selected_events')
         print(f"Removing events with IDs: {event_ids}")  # Debugging statement
         if event_ids:
             Event.objects.filter(id__in=event_ids).delete()
