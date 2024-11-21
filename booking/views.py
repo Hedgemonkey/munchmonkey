@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Event, Booking
 from .forms import LocationFilterForm, EventForm
 from datetime import timedelta, datetime
+from django.utils import timezone
 
 def locations(request):
     form = LocationFilterForm(request.GET or None)
@@ -27,16 +28,23 @@ def staff_dashboard(request):
 @login_required
 def events_overview(request):
     events = Event.objects.all().order_by('start')
+    events_with_slots = [(event, event.calculate_available_slots()) for event in events]
     form = EventForm()
-    return render(request, 'booking/events_overview.html', {'events': events, 'form': form})
+    return render(request, 'booking/events_overview.html', {'events_with_slots': events_with_slots, 'form': form})
 
 @login_required
 def add_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('events_overview')
+            event = form.save(commit=False)
+            if event.start < timezone.now():
+                form.add_error('start', 'Start time cannot be before the current time.')
+            elif event.stop < event.start:
+                form.add_error('stop', 'Stop time cannot be before the start time.')
+            else:
+                event.save()
+                return redirect('events_overview')
     else:
         form = EventForm()
     return render(request, 'booking/add_event.html', {'form': form})
@@ -47,22 +55,18 @@ def edit_event(request, event_id):
     if request.method == 'POST':
         form = EventForm(request.POST, instance=event)
         if form.is_valid():
-            form.save()
-            return redirect('events_overview')
+            event = form.save(commit=False)
+            if event.start < timezone.now():
+                form.add_error('start', 'Start time cannot be before the current time.')
+            elif event.stop < event.start:
+                form.add_error('stop', 'Stop time cannot be before the start time.')
+            else:
+                event.save()
+                return redirect('events_overview')
     else:
         form = EventForm(instance=event)
     available_slots = event.calculate_available_slots()
     return render(request, 'booking/edit_event.html', {'form': form, 'event': event, 'available_slots': available_slots})
-
-@login_required
-def save_event(request, event_id):
-    if request.method == 'POST':
-        event = get_object_or_404(Event, id=event_id)
-        form = EventForm(request.POST, instance=event)
-        if form.is_valid():
-            form.save()
-            return redirect('events_overview')
-    return redirect('edit_event', event_id=event_id)
 
 @login_required
 def remove_event(request, event_id):

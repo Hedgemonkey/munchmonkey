@@ -17,7 +17,7 @@
             <h1 class="card-title mb-4">{% trans "Edit Event" %}</h1>
         </div>
         <div class="card-body">
-            <form method="post" action="{% url 'save_event' event.id %}">
+            <form method="post" action="{% url 'edit_event' event.id %}">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <div class="card-footer p-0 d-flex">
