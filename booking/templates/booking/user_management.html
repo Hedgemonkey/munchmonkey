@@ -1,0 +1,207 @@
+<!-- FILE: booking/templates/booking/user_management.html -->
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "User Management" %}{% endblock title %}
+{% block description %}{% trans "Manage users" %}{% endblock description %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'booking/css/booking_styles.css' %}">
+{% endblock styles %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white text-center">
+            <h1 class="card-title mb-4">{% trans "User Management" %}</h1>
+        </div>
+        <div class="card-body">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title">{% trans "Search" %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="selectUserName" class="form-label">{% trans "Name:" %}</label>
+                        <select class="form-select" id="selectUserName">
+                            <option value="">{% trans "Select a user by name" %}</option>
+                            {% for user in users %}
+                                <option value="{{ user.id }}">{{ user.first_name }} {{ user.last_name }} - {{ user.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="selectUserUsername" class="form-label">{% trans "Username:" %}</label>
+                        <select class="form-select" id="selectUserUsername">
+                            <option value="">{% trans "Select a user by username" %}</option>
+                            {% for user in users %}
+                                <option value="{{ user.id }}">{{ user.username }} - {{ user.first_name }} {{ user.last_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary" id="resetSearchButton">{% trans "Reset" %}</button>
+                </div>
+            </div>
+            <div id="selectedUserCard" class="mb-4">
+                <!-- Selected user card will be displayed here -->
+            </div>
+            <div class="table-responsive d-none d-lg-block">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "Username" %}</th>
+                            <th>{% trans "Email" %}</th>
+                            <th>{% trans "Phone" %}</th>
+                            <th>{% trans "Role" %}</th>
+                            <th>{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-table-body">
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.first_name }} {{ user.last_name }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.phone }}</td>
+                                <td>{{ user.role }}</td>
+                                <td class="d-flex p-0">
+                                    <button class="btn btn-info btn-sm flex-fill" onclick="displaySelectedUserCard({{ user.id }}, {{ users|safe }})">{% trans "View" %}</button>
+                                    <button class="btn btn-secondary btn-sm flex-fill" onclick="openEditUserModal({{ user.id }})" data-bs-toggle="modal" data-bs-target="#editUserModal">{% trans "Edit" %}</button>
+                                    {% if user.is_manager %}
+                                        <button class="btn btn-warning btn-sm flex-fill" onclick="openChangeRoleModal({{ user.id }})" data-bs-toggle="modal" data-bs-target="#changeRoleModal">{% trans "Change Role" %}</button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-block d-lg-none">
+                <div class="row" id="user-cards">
+                    {% for user in users %}
+                        <div class="col-12 mb-4 user-card" data-user-id="{{ user.id }}">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="card-title">{{ user.username }}</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <strong>{% trans "Name" %}:</strong> {{ user.first_name }} {{ user.last_name }}<br>
+                                        <strong>{% trans "Email" %}:</strong> {{ user.email }}<br>
+                                        <strong>{% trans "Phone" %}:</strong> {{ user.phone }}<br>
+                                        <strong>{% trans "Role" %}:</strong> {{ user.role }}<br>
+                                        <strong>{% trans "Upcoming Bookings" %}:</strong> {{ user.upcoming_bookings_count }}<br>
+                                        &emsp;{% trans "Confirmed" %}: <span class="text-success fw-bold">{{ user.confirmed_upcoming_bookings_count }}</span><br>
+                                        &emsp;{% trans "Unconfirmed" %}: <span class="text-danger fw-bold">{{ user.unconfirmed_upcoming_bookings_count }}</span><br>
+                                        <strong>{% trans "Total Bookings to Date" %}:</strong> {{ user.total_bookings_count }}<br>
+                                        &emsp;{% trans "Confirmed" %}: <span class="text-success fw-bold">{{ user.total_confirmed_bookings_count }}</span><br>
+                                        &emsp;{% trans "Unconfirmed" %}: <span class="text-danger fw-bold">{{ user.total_unconfirmed_bookings_count }}</span>
+                                    </p>
+                                    <div id="userBookings-{{ user.id }}" class="form-group">
+                                        <!-- Booking details will be populated here -->
+                                    </div>
+                                </div>
+                                <div class="card-footer p-0 d-flex">
+                                    <button class="btn btn-secondary btn-sm w-100" onclick="openEditUserModal({{ user.id }})" data-bs-toggle="modal" data-bs-target="#editUserModal">{% trans "Edit" %}</button>
+                                    {% if user.is_manager %}
+                                        <button class="btn btn-warning btn-sm w-100" onclick="openChangeRoleModal({{ user.id }})" data-bs-toggle="modal" data-bs-target="#changeRoleModal">{% trans "Change Role" %}</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="editUserModalLabel">{% trans "Edit User" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editUserForm">
+                    <div class="mb-3">
+                        <label for="editUserName" class="form-label">{% trans "Name" %}</label>
+                        <input type="text" class="form-control" id="editUserName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserUsername" class="form-label">{% trans "Username" %}</label>
+                        <input type="text" class="form-control" id="editUserUsername">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserEmail" class="form-label">{% trans "Email" %}</label>
+                        <input type="email" class="form-control" id="editUserEmail">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserPhone" class="form-label">{% trans "Phone" %}</label>
+                        <input type="text" class="form-control" id="editUserPhone">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                <button type="button" class="btn btn-primary" id="saveEditButton">{% trans "Save changes" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Role Modal -->
+<div class="modal fade" id="changeRoleModal" tabindex="-1" aria-labelledby="changeRoleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="changeRoleModalLabel">{% trans "Change User Role" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="changeRoleForm">
+                    <div class="mb-3">
+                        <label for="newRole" class="form-label">{% trans "New Role" %}</label>
+                        <select class="form-select" id="newRole">
+                            <option value="Manager">{% trans "Manager" %}</option>
+                            <option value="Staff">{% trans "Staff" %}</option>
+                            <option value="Customer">{% trans "Customer" %}</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                <button type="button" class="btn btn-primary" id="saveRoleButton">{% trans "Save changes" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Response Modal -->
+<div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="responseModalLabel">{% trans "Response" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="responseMessage">
+                <!-- Response message will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'includes/django_vars.html' %}
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'booking/js/user_management.js' %}"></script>
+{% endblock scripts %}

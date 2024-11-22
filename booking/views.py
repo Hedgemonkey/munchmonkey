@@ -220,7 +220,6 @@ def view_booking(request, booking_id):
     }
     return JsonResponse(booking_details)
 
-@csrf_exempt
 @login_required
 def create_user(request):
     if request.method == 'POST':
@@ -248,3 +247,87 @@ def create_user(request):
         return JsonResponse({'success': True, 'user_id': user.id, 'username': user.username})
 
     return JsonResponse({'success': False, 'error': 'Invalid request method.'})
+
+@login_required
+def user_management(request):
+    return render(request, 'booking/user_management.html')
+
+@login_required
+def list_users(request):
+    users = CustomUser.objects.all()
+    user_list = [{
+        'id': user.id,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'username': user.username,
+        'email': user.email,
+        'phone': user.phone_number,
+        'role': 'Manager' if user.is_superuser else 'Staff' if user.is_staff else 'Customer',
+        'is_manager': request.user.is_superuser,
+        'bookings': [{
+            'id': booking.id,
+            'event_location': booking.event.location,  # Access the location field from the linked Event table
+            'start_time': booking.start_time,
+            'guests': booking.number_of_people,  # Use 'number_of_people' for guests
+            'tables': (booking.number_of_people + 3) // 4,  # Calculate the number of tables needed
+            'status': 'Confirmed' if booking.confirmed else 'Requested'  # Determine the status
+        } for booking in Booking.objects.filter(user=user)]
+    } for user in users]
+    return JsonResponse({'users': user_list})
+
+@login_required
+def user_details(request, user_id):
+    user = CustomUser.objects.get(id=user_id)
+    user_data = {
+        'id': user.id,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'username': user.username,
+        'email': user.email,
+        'phone': user.phone_number,
+        'role': 'Manager' if user.is_superuser else 'Staff' if user.is_staff else 'Customer',
+        'bookings': [{
+            'id': booking.id,
+            'event_location': booking.event.location,  # Access the location field from the linked Event table
+            'start_time': booking.start_time,
+            'guests': booking.number_of_people,  # Use 'number_of_people' for guests
+            'tables': (booking.number_of_people + 3) // 4,  # Calculate the number of tables needed
+            'status': 'Confirmed' if booking.confirmed else 'Requested'  # Determine the status
+        } for booking in Booking.objects.filter(user=user)]
+    }
+    return JsonResponse(user_data)
+
+@login_required
+def change_user_role(request, user_id):
+    if request.method == 'POST' and request.user.is_superuser:
+        user = CustomUser.objects.get(id=user_id)
+        new_role = request.POST.get('role')
+        print(f"Received POST data: {request.POST}")
+        print(f"Changing role for user {user_id} to {new_role}")
+        if new_role == 'Manager':
+            user.is_superuser = True
+            user.is_staff = True
+        elif new_role == 'Staff':
+            user.is_superuser = False
+            user.is_staff = True
+        else:
+            user.is_superuser = False
+            user.is_staff = False
+        user.save()
+        print(f"Role changed successfully for user {user_id}")
+        return JsonResponse({'status': 'success'})
+    print(f"Failed to change role for user {user_id}")
+    return JsonResponse({'status': 'error'}, status=400)
+
+@login_required
+def edit_user_details(request, user_id):
+    if request.method == 'POST' and request.user.is_superuser:
+        user = CustomUser.objects.get(id=user_id)
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.username = request.POST.get('username')
+        user.email = request.POST.get('email')
+        user.phone_number = request.POST.get('phone')
+        user.save()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)

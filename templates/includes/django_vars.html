@@ -1,4 +1,5 @@
 <!-- FILE: templates/includes/django_vars.html -->
+{% load i18n %}
 <script>
     const customLoginUrl = "{% url 'custom_login' %}";
     const customSignupUrl = "{% url 'custom_signup' %}";
@@ -7,5 +8,23 @@
     const accountEditUrl = "{% url 'account_edit' %}";
     const accountDeleteUrl = "{% url 'account_delete' %}";
     const accountChangePasswordUrl = "{% url 'account_change_password' %}";
-    // Add more variables as needed
+    const transView = "{% trans 'View' %}";
+    const transEdit = "{% trans 'Edit' %}";
+    const transChangeRole = "{% trans 'Change Role' %}";
+    const transEmail = "{% trans 'Email' %}";
+    const transPhone = "{% trans 'Phone' %}";
+    const transRole = "{% trans 'Role' %}";
+    const transName = "{% trans 'Name' %}";
+    const transUsername = "{% trans 'Username' %}";
+    const transSaveChanges = "{% trans 'Save changes' %}";
+    const transClose = "{% trans 'Close' %}";
+    const transResponse = "{% trans 'Response' %}";
+    const transUserDetailsUpdated = "{% trans 'User details updated successfully' %}";
+    const transFailedToUpdateUserDetails = "{% trans 'Failed to update user details' %}";
+    const transUserRoleUpdated = "{% trans 'User role updated successfully' %}";
+    const transFailedToUpdateUserRole = "{% trans 'Failed to update user role' %}";
+    const transAnErrorOccurred = "{% trans 'An error occurred' %}";
+    const transShowBooking = "{% trans 'Show Booking' %}";
+    const transBookings = "{% trans 'Bookings' %}";
+    const transNoBookingsFound = "{% trans 'No bookings found' %}";
 </script>

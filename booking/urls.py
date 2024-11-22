@@ -20,8 +20,13 @@ urlpatterns = [
     path('staff/bookings/event/<int:event_id>/', views.event_bookings, name='event_bookings'),
     path('staff/view_booking/<int:booking_id>/', views.view_booking, name='view_booking'),
     path('staff/create_user/', views.create_user, name='create_user'),
+    path('staff/user_management/', views.user_management, name='user_management'),
     # API endpoint for available slots
+    path('staff/api/users/', views.list_users, name='list_users'),
+    path('staff/api/users/<int:user_id>/', views.user_details, name='user_details'),
+    path('staff/api/users/<int:user_id>/role/', views.change_user_role, name='change_user_role'),
     path('api/available_slots/', views.available_slots, name='available_slots'),
+    path('staff/api/users/<int:user_id>/edit/', views.edit_user_details, name='edit_user_details'),
 ]
 
 if settings.DEBUG:

@@ -24,3 +24,52 @@
     width: 100%;
     border-radius: 0;
 }
+
+.user-card {
+    margin-bottom: 1rem;
+}
+
+.user-card .card-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.user-card .btn {
+    flex: 1;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+}
+
+.user-card .btn + .btn {
+    border-left: 0px;
+}
+
+@media (max-width: 991.98px) {
+    .table {
+        display: none;
+    }
+}
+
+@media (min-width: 992px) {
+    .user-card {
+        display: none;
+    }
+}
+
+.table .btn {
+    flex: 1;
+    margin: 0;
+    height: 100%;
+    border-radius: 0;
+    border: none;
+}
+
+.table .btn + .btn {
+    border-left: 0px;
+}
+
+.table td {
+    height: 100%;
+    padding: 0;
+}
