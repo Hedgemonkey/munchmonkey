@@ -19,6 +19,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('booking-confirmed').textContent = data.confirmed ? 'Yes' : 'No';
                 document.getElementById('booking-comments-user').textContent = data.comments_user || '';
                 document.getElementById('booking-comments-staff').textContent = data.comments_staff || '';
+                document.getElementById('booking-id').value = bookingId; // Set the booking ID in the hidden input field
             });
+    });
+
+    const goToEditBookingButton = document.getElementById('goToEditBookingButton');
+    goToEditBookingButton.addEventListener('click', function() {
+        const bookingId = document.getElementById('booking-id').value;
+        window.location.href = `/staff/bookings/${bookingId}/`;
     });
 });

@@ -148,7 +148,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="viewBookingModalLabel">{% trans "Booking Details" %}</h5>
+                <h5 class="modal-title" id="viewBookingModalLabel">{% trans "View Booking" %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -164,10 +164,12 @@
                         <p><strong>{% trans "Confirmed" %}:</strong> <span id="booking-confirmed"></span></p>
                         <p><strong>{% trans "User Comments" %}:</strong> <span id="booking-comments-user"></span></p>
                         <p><strong>{% trans "Staff Comments" %}:</strong> <span id="booking-comments-staff"></span></p>
+                        <input type="hidden" id="booking-id" value="">
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="goToEditBookingButton">{% trans "Go to Edit Booking" %}</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
