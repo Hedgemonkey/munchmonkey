@@ -1,7 +1,7 @@
 # FILE: booking/views.py
 
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Event, Booking, CustomUser
 from .forms import LocationFilterForm, EventForm, BookingForm, ConfirmBookingForm
 from datetime import timedelta, datetime
@@ -16,6 +16,9 @@ import string
 import json
 
 logger = logging.getLogger(__name__)
+
+def staff_or_superuser_required(user):
+    return user.is_authenticated and (user.is_staff or user.is_superuser)
 
 def locations(request):
     form = LocationFilterForm(request.GET or None)
@@ -32,10 +35,12 @@ def locations(request):
     return render(request, 'booking/locations.html', {'form': form, 'events': events})
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def staff_dashboard(request):
     return render(request, 'booking/staff_dashboard.html')
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def events_overview(request):
     events = Event.objects.all().order_by('start')
     events_with_slots = [(event, event.calculate_available_slots()) for event in events]
@@ -43,6 +48,7 @@ def events_overview(request):
     return render(request, 'booking/events_overview.html', {'events_with_slots': events_with_slots, 'form': form})
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def add_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
@@ -60,6 +66,7 @@ def add_event(request):
     return render(request, 'booking/add_event.html', {'form': form})
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def edit_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if request.method == 'POST':
@@ -79,12 +86,14 @@ def edit_event(request, event_id):
     return render(request, 'booking/edit_event.html', {'form': form, 'event': event, 'available_slots': available_slots})
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def remove_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     event.delete()
     return redirect('events_overview')
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def remove_selected_events(request):
     if request.method == 'POST':
         event_ids = request.POST.getlist('selected_events')
@@ -94,6 +103,7 @@ def remove_selected_events(request):
     return redirect('events_overview')
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def book_slot(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     if request.method == 'POST':
@@ -119,11 +129,13 @@ def book_slot(request, event_id):
     return render(request, 'booking/book_slot.html', {'event': event, 'available_slots': available_slots})
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def staff_bookings(request):
     bookings = Booking.objects.all().order_by('start_time')
     return render(request, 'booking/staff_bookings.html', {'bookings': bookings})
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def add_booking(request):
     events = Event.objects.all()
     users = CustomUser.objects.all()
@@ -153,6 +165,7 @@ def add_booking(request):
     return render(request, 'booking/add_booking.html', {'form': form, 'events': events, 'users': users})
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def confirm_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
     if request.method == 'POST':
@@ -172,6 +185,7 @@ def confirm_booking(request, booking_id):
     return render(request, 'booking/confirm_booking.html', {'form': form, 'booking': booking})
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def event_bookings(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     bookings = Booking.objects.filter(event=event).order_by('start_time')
@@ -187,6 +201,7 @@ def event_bookings(request, event_id):
     })
 
 @require_GET
+@user_passes_test(staff_or_superuser_required)
 def available_slots(request):
     event_id = request.GET.get('event_id')
     event = get_object_or_404(Event, id=event_id)
@@ -204,6 +219,7 @@ def available_slots(request):
     return JsonResponse({'available_slots': available_slots})
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def view_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
     booking_details = {
@@ -221,6 +237,7 @@ def view_booking(request, booking_id):
     return JsonResponse(booking_details)
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def create_user(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -249,10 +266,12 @@ def create_user(request):
     return JsonResponse({'success': False, 'error': 'Invalid request method.'})
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def user_management(request):
     return render(request, 'booking/user_management.html')
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def list_users(request):
     users = CustomUser.objects.all()
     user_list = [{
@@ -276,6 +295,7 @@ def list_users(request):
     return JsonResponse({'users': user_list})
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def user_details(request, user_id):
     user = CustomUser.objects.get(id=user_id)
     user_data = {
@@ -298,6 +318,7 @@ def user_details(request, user_id):
     return JsonResponse(user_data)
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def change_user_role(request, user_id):
     if request.method == 'POST' and request.user.is_superuser:
         user = CustomUser.objects.get(id=user_id)
@@ -320,6 +341,7 @@ def change_user_role(request, user_id):
     return JsonResponse({'status': 'error'}, status=400)
 
 @login_required
+@user_passes_test(staff_or_superuser_required)
 def edit_user_details(request, user_id):
     if request.method == 'POST' and request.user.is_superuser:
         user = CustomUser.objects.get(id=user_id)
@@ -331,3 +353,46 @@ def edit_user_details(request, user_id):
         user.save()
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error'}, status=400)
+
+@login_required
+@user_passes_test(staff_or_superuser_required)
+def booking_detail(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    user = booking.user
+
+    # Calculate booking statistics
+    current_time = timezone.now()
+    upcoming_bookings = Booking.objects.filter(user=user, start_time__gt=current_time)
+    confirmed_upcoming_bookings = upcoming_bookings.filter(confirmed=True)
+    unconfirmed_upcoming_bookings = upcoming_bookings.filter(confirmed=False)
+    total_bookings = Booking.objects.filter(user=user)
+    total_confirmed_bookings = total_bookings.filter(confirmed=True)
+    total_unconfirmed_bookings = total_bookings.filter(confirmed=False)
+
+    context = {
+        'booking': {
+            'event_location': booking.event.location,
+            'start_time': booking.start_time,
+            'guests': booking.number_of_people,
+            'tables': (booking.number_of_people + 3) // 4,
+            'status': 'Confirmed' if booking.confirmed else 'Unconfirmed',
+            'user': {
+                'username': user.username,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'name': f"{user.first_name} {user.last_name}",
+                'email': user.email,
+                'phone': user.phone_number,
+                'upcoming_bookings_count': upcoming_bookings.count(),
+                'confirmed_upcoming_bookings_count': confirmed_upcoming_bookings.count(),
+                'unconfirmed_upcoming_bookings_count': unconfirmed_upcoming_bookings.count(),
+                'total_bookings_count': total_bookings.count(),
+                'total_confirmed_bookings_count': total_confirmed_bookings.count(),
+                'total_unconfirmed_bookings_count': total_unconfirmed_bookings.count(),
+            },
+            'comments_user': booking.comments_user,
+            'comments_staff': booking.comments_staff,
+            'id': booking.id,
+        }
+    }
+    return render(request, 'booking/booking_detail.html', context)

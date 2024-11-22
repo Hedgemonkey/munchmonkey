@@ -21,6 +21,7 @@ urlpatterns = [
     path('staff/view_booking/<int:booking_id>/', views.view_booking, name='view_booking'),
     path('staff/create_user/', views.create_user, name='create_user'),
     path('staff/user_management/', views.user_management, name='user_management'),
+    path('staff/bookings/<int:booking_id>/', views.booking_detail, name='booking_detail'),
     # API endpoint for available slots
     path('staff/api/users/', views.list_users, name='list_users'),
     path('staff/api/users/<int:user_id>/', views.user_details, name='user_details'),
