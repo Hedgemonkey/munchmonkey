@@ -39,6 +39,7 @@ def locations(request):
 def staff_dashboard(request):
     return render(request, 'booking/staff_dashboard.html')
 
+# EVENTS
 @login_required
 @user_passes_test(staff_or_superuser_required)
 def events_overview(request):
@@ -102,6 +103,7 @@ def remove_selected_events(request):
             event.delete()
     return redirect('events_overview')
 
+# BOOKINGS
 @login_required
 @user_passes_test(staff_or_superuser_required)
 def book_slot(request, event_id):
@@ -236,6 +238,7 @@ def view_booking(request, booking_id):
     }
     return JsonResponse(booking_details)
 
+# USERS
 @login_required
 @user_passes_test(staff_or_superuser_required)
 def create_user(request):

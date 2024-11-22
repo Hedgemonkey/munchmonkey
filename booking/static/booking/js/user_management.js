@@ -208,7 +208,8 @@ function openEditUserModal(userId) {
     fetch(`/staff/api/users/${userId}/`)
         .then(response => response.json())
         .then(user => {
-            document.getElementById('editUserName').value = user.first_name + ' ' + user.last_name;
+            document.getElementById('editUserFirstName').value = user.first_name;
+            document.getElementById('editUserLastName').value = user.last_name;
             document.getElementById('editUserUsername').value = user.username;
             document.getElementById('editUserEmail').value = user.email;
             document.getElementById('editUserPhone').value = user.phone;
@@ -223,9 +224,8 @@ function openEditUserModal(userId) {
 
 function saveUserDetails(userId) {
     const formData = new FormData();
-    const name = document.getElementById('editUserName').value.split(' ');
-    formData.append('first_name', name[0]);
-    formData.append('last_name', name.slice(1).join(' '));
+    formData.append('first_name', document.getElementById('editUserFirstName').value);
+    formData.append('last_name', document.getElementById('editUserLastName').value);
     formData.append('username', document.getElementById('editUserUsername').value);
     formData.append('email', document.getElementById('editUserEmail').value);
     formData.append('phone', document.getElementById('editUserPhone').value);
