@@ -10,6 +10,7 @@ urlpatterns = [
     path('locations/', views.locations, name='locations'),
     #Customer URLS
     path('reservation/', views.reservation, name='reservation'),
+    path('make_reservation/', views.make_reservation, name='make_reservation'),
     # Staff URLs
     path('staff/dashboard/', views.staff_dashboard, name='staff_dashboard'),
     path('staff/events/', views.events_overview, name='events_overview'),

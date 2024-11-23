@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Event, Booking, CustomUser
 from .forms import ReservationForm, LocationFilterForm, EventForm, BookingForm, ConfirmBookingForm
 from datetime import timedelta, datetime
+from django.utils.dateparse import parse_date
 from django.utils import timezone
 import pytz  # Import pytz for timezone handling
 from django.http import JsonResponse
@@ -20,20 +21,7 @@ logger = logging.getLogger(__name__)
 def staff_or_superuser_required(user):
     return user.is_authenticated and (user.is_staff or user.is_superuser)
 
-def locations(request):
-    form = LocationFilterForm(request.GET or None)
-    events = Event.objects.all()
-
-    if form.is_valid():
-        if form.cleaned_data['location']:
-            events = events.filter(location=form.cleaned_data['location'])
-        if form.cleaned_data['date']:
-            events = events.filter(start__date=form.cleaned_data['date'])
-
-    events = events.order_by('start')
-
-    return render(request, 'booking/locations.html', {'form': form, 'events': events})
-
+# STAFF VIEWS
 @login_required
 @user_passes_test(staff_or_superuser_required)
 def staff_dashboard(request):
@@ -331,25 +319,7 @@ def booking_detail(request, booking_id):
         }
     }
     return render(request, 'booking/booking_detail.html', context)
-# CUSTOMER VIEWS
 
-def reservation(request):
-    if request.method == 'POST':
-        form = ReservationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('reservation_success')  # Redirect to a success page
-    else:
-        form = ReservationForm()
-    
-    context = {
-        'form': form,
-        'event_locations': EventLocation.objects.all(),  # Assuming you have an EventLocation model
-        'start_times': get_available_start_times(),  # Define this function to get available times
-    }
-    return render(request, 'bookings/customers/reservations.html', context)
-
-# STAFF VIEWS
 @login_required
 @user_passes_test(staff_or_superuser_required)
 def get_booking(request, booking_id):
@@ -411,6 +381,7 @@ def edit_booking(request, booking_id):
         return JsonResponse({'status': 'success', 'booking': booking_data}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
+# USER MANAGEMENT
 @login_required
 @user_passes_test(staff_or_superuser_required)
 def create_user(request):
@@ -529,3 +500,73 @@ def edit_user_details(request, user_id):
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error'}, status=400)
 
+# CUSTOMER VIEWS
+
+def locations(request):
+    form = LocationFilterForm(request.GET or None)
+    events = Event.objects.all()
+
+    if form.is_valid():
+        if form.cleaned_data['location']:
+            events = events.filter(location=form.cleaned_data['location'])
+        if form.cleaned_data['date']:
+            events = events.filter(start__date=form.cleaned_data['date'])
+
+    events = events.order_by('start')
+
+    return render(request, 'booking/locations.html', {'form': form, 'events': events})
+
+def get_available_start_times(event):
+    # Replace with your logic to get available start times for the event
+    slots = event.calculate_available_slots()
+    available_slots = []
+
+    for slot in slots:
+        available_tables = event.get_available_tables(slot)
+        available_slots.append({
+            'time': slot.strftime('%Y-%m-%d %H:%M'),
+            'available_tables': available_tables,
+            'available': available_tables > 0
+        })
+
+    return available_slots
+
+def reservation(request):
+    selected_location = request.GET.get('event_location')
+    selected_date = request.GET.get('event_date')
+    selected_event = None
+    start_times = []
+
+    if selected_location and selected_date:
+        # Parse the date to ensure it's in the correct format
+        parsed_date = parse_date(selected_date)
+        if parsed_date:
+            selected_event = Event.objects.filter(location=selected_location, start__date=parsed_date).first()
+            if selected_event:
+                start_times = get_available_start_times(selected_event)
+
+    context = {
+        'event_locations': Event.objects.values_list('location', flat=True).distinct(),
+        'event_dates': Event.objects.filter(location=selected_location).values_list('start__date', flat=True).distinct() if selected_location else [],
+        'start_times': start_times,
+        'selected_location': selected_location,
+        'selected_date': selected_date,
+        'selected_event': selected_event,
+    }
+    return render(request, 'booking/customers/reservations.html', context)
+
+@login_required
+def make_reservation(request):
+    if request.method == 'POST':
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            booking = form.save(commit=False)
+            # Ensure the start_time is naive
+            if booking.start_time.tzinfo is not None:
+                booking.start_time = booking.start_time.replace(tzinfo=None)
+            booking.user = request.user  # Set the user field to the current user
+            booking.save()
+            return JsonResponse({'success': True, 'booking_id': booking.id})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
