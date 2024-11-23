@@ -9,66 +9,120 @@
             <h1 class="card-title mb-4">{% trans "Reservations" %}</h1>
         </div>
         <div class="card-body">
-            <!-- Quick Search Form -->
-            <form id="quickSearchForm" method="get" action="{% url 'reservation' %}">
-                <div class="mb-3">
-                    <label for="eventLocation" class="form-label">{% trans "Event Location:" %}</label>
-                    <select id="eventLocation" name="event_location" class="form-select" onchange="this.form.submit()">
-                        <option value="">{% trans "Select a location" %}</option>
-                        {% for location in event_locations %}
-                            <option value="{{ location }}" {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
-                        {% endfor %}
-                    </select>
+            <!-- Make a Reservation Card -->
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white text-center">
+                    <h2 class="card-title mb-4">{% trans "Make a Reservation" %}</h2>
                 </div>
-                <div class="mb-3">
-                    <label for="eventDate" class="form-label">{% trans "Event Date:" %}</label>
-                    <select id="eventDate" name="event_date" class="form-select" onchange="this.form.submit()">
-                        <option value="">{% trans "Select a date" %}</option>
-                        {% for date in event_dates %}
-                            <option value="{{ date|date:'Y-m-d' }}" {% if date|date:'Y-m-d' == selected_date %}selected{% endif %}>{{ date|date:'Y-m-d' }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </form>
-
-            <!-- Reservation Form -->
-            {% if user.is_authenticated %}
-                {% if selected_event %}
-                    <form id="reservationForm" method="post" action="{% url 'make_reservation' %}" onsubmit="return false;">
-                        {% csrf_token %}
-                        <input type="hidden" name="event" value="{{ selected_event.id }}">
+                <div class="card-body">
+                    <!-- Quick Search Form -->
+                    <form id="quickSearchForm" method="get" action="{% url 'reservation' %}">
                         <div class="mb-3">
-                            <label for="startTime" class="form-label">{% trans "Start Time:" %}</label>
-                            <select id="startTime" name="start_time" class="form-select">
-                                <option value="">{% trans "Select a time" %}</option>
-                                {% for time in start_times %}
-                                    <option value="{{ time.time }}" {% if time.time == selected_time %}selected{% endif %}>
-                                        {{ time.time }} ({{ time.available_tables }} tables available)
-                                    </option>
+                            <label for="eventLocation" class="form-label">{% trans "Event Location:" %}</label>
+                            <select id="eventLocation" name="event_location" class="form-select" onchange="this.form.submit()">
+                                <option value="">{% trans "Select a location" %}</option>
+                                {% for location in event_locations %}
+                                    <option value="{{ location }}" {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="guests" class="form-label">{% trans "Guests:" %}</label>
-                            <input type="number" class="form-control" id="guests" name="number_of_people" placeholder="{% trans "Enter number of guests" %}">
-                            <small class="form-text text-muted">{% trans "1 Table per 4 Guests" %}</small>
+                            <label for="eventDate" class="form-label">{% trans "Event Date:" %}</label>
+                            <select id="eventDate" name="event_date" class="form-select" onchange="this.form.submit()">
+                                <option value="">{% trans "Select a date" %}</option>
+                                {% for date in event_dates %}
+                                    <option value="{{ date|date:'Y-m-d' }}" {% if date|date:'Y-m-d' == selected_date %}selected{% endif %}>{{ date|date:'Y-m-d' }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="tables" class="form-label">{% trans "Tables:" %}</label>
-                            <input type="number" class="form-control" id="tables" name="tables" placeholder="{% trans "Enter number of tables" %}" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label for="comments" class="form-label">{% trans "Additional comments:" %}</label>
-                            <textarea class="form-control" id="comments" name="comments_user" rows="3" placeholder="{% trans "Enter any additional comments" %}"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">{% trans "Submit Reservation" %}</button>
                     </form>
-                {% else %}
-                    <p>{% trans "Please select a location and date to view available events." %}</p>
-                {% endif %}
-            {% else %}
-                <p>{% trans "You must be signed in to make a reservation." %} <a href="{% url 'account_login' %}">{% trans "Sign in" %}</a> {% trans "or" %} <a href="{% url 'account_signup' %}">{% trans "Sign up" %}</a>.</p>
-            {% endif %}
+
+                    <!-- Reservation Form -->
+                    {% if user.is_authenticated %}
+                        {% if selected_event %}
+                            <form id="reservationForm" method="post" action="{% url 'make_reservation' %}" onsubmit="return false;">
+                                {% csrf_token %}
+                                <input type="hidden" name="event" value="{{ selected_event.id }}">
+                                <div class="mb-3">
+                                    <label for="startTime" class="form-label">{% trans "Start Time:" %}</label>
+                                    <select id="startTime" name="start_time" class="form-select">
+                                        <option value="">{% trans "Select a time" %}</option>
+                                        {% for time in start_times %}
+                                            <option value="{{ time.time }}" {% if time.time == selected_time %}selected{% endif %}>
+                                                {{ time.time }} ({{ time.available_tables }} tables available)
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="guests" class="form-label">{% trans "Guests:" %}</label>
+                                    <input type="number" class="form-control" id="guests" name="number_of_people" placeholder="{% trans "Enter number of guests" %}">
+                                    <small class="form-text text-muted">{% trans "1 Table per 4 Guests" %}</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tables" class="form-label">{% trans "Tables:" %}</label>
+                                    <input type="number" class="form-control" id="tables" name="tables" placeholder="{% trans "Enter number of tables" %}" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="comments" class="form-label">{% trans "Additional comments:" %}</label>
+                                    <textarea class="form-control" id="comments" name="comments_user" rows="3" placeholder="{% trans "Enter any additional comments" %}"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">{% trans "Submit Reservation" %}</button>
+                            </form>
+                        {% else %}
+                            <p>{% trans "Please select a location and date to view available events." %}</p>
+                        {% endif %}
+                    {% else %}
+                        <p>{% trans "You must be signed in to make a reservation." %} <a href="{% url 'account_login' %}">{% trans "Sign in" %}</a> {% trans "or" %} <a href="{% url 'account_signup' %}">{% trans "Sign up" %}</a>.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- User Reservations Card -->
+            <div class="card">
+                <div class="card-header bg-secondary text-white text-center">
+                    <h2 class="card-title mb-4">{% trans "Your Reservations" %}</h2>
+                </div>
+                <div class="card-body">
+                    {% if user.is_authenticated %}
+                        <div class="mb-3 text-end">
+                            <a href="{% url 'reservation' %}?view_all={% if view_all %}false{% else %}true{% endif %}" class="btn btn-link">
+                                {% if view_all %}
+                                    {% trans "View Upcoming Reservations" %}
+                                {% else %}
+                                    {% trans "View All Reservations" %}
+                                {% endif %}
+                            </a>
+                        </div>
+                        {% if user_reservations %}
+                            <ul class="list-group">
+                                {% for reservation in user_reservations %}
+                                    <li class="list-group-item">
+                                        <strong>{% trans "Event:" %}</strong> {{ reservation.event.location }}<br>
+                                        <strong>{% trans "Date:" %}</strong> {{ reservation.start_time|date:"Y-m-d" }}<br>
+                                        <strong>{% trans "Time:" %}</strong> {{ reservation.start_time|time:"H:i" }}<br>
+                                        <strong>{% trans "Guests:" %}</strong> {{ reservation.number_of_people }}<br>
+                                        <strong>{% trans "Tables:" %}</strong> {{ reservation.tables }}<br>
+                                        <strong>{% trans "Comments:" %}</strong> {{ reservation.comments_user }}<br>
+                                        <strong>{% trans "Status:" %}</strong>
+                                        {% if reservation.canceled %}
+                                            <span class="badge bg-danger">{% trans "Canceled" %}</span>
+                                        {% elif reservation.confirmed %}
+                                            <span class="badge bg-success">{% trans "Confirmed" %}</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">{% trans "Unconfirmed" %}</span>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>{% trans "You have no upcomming reservations." %}</p>
+                        {% endif %}
+                    {% else %}
+                        <p>{% trans "You must be signed in to view your reservations." %} <a href="{% url 'account_login' %}">{% trans "Sign in" %}</a> {% trans "or" %} <a href="{% url 'account_signup' %}">{% trans "Sign up" %}</a>.</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 </div>

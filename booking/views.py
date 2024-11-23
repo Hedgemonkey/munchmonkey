@@ -531,9 +531,11 @@ def get_available_start_times(event):
 
     return available_slots
 
+@login_required
 def reservation(request):
     selected_location = request.GET.get('event_location')
     selected_date = request.GET.get('event_date')
+    view_all = request.GET.get('view_all', 'false') == 'true'
     selected_event = None
     start_times = []
 
@@ -545,6 +547,14 @@ def reservation(request):
             if selected_event:
                 start_times = get_available_start_times(selected_event)
 
+    if request.user.is_authenticated:
+        if view_all:
+            user_reservations = Booking.objects.filter(user=request.user)
+        else:
+            user_reservations = Booking.objects.filter(user=request.user, start_time__gte=datetime.now())
+    else:
+        user_reservations = []
+
     context = {
         'event_locations': Event.objects.values_list('location', flat=True).distinct(),
         'event_dates': Event.objects.filter(location=selected_location).values_list('start__date', flat=True).distinct() if selected_location else [],
@@ -552,6 +562,8 @@ def reservation(request):
         'selected_location': selected_location,
         'selected_date': selected_date,
         'selected_event': selected_event,
+        'user_reservations': user_reservations,
+        'view_all': view_all,
     }
     return render(request, 'booking/customers/reservations.html', context)
 
