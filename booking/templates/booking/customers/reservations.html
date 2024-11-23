@@ -1,0 +1,46 @@
+<!-- FILE: booking/templates/bookings/customers/reservations.html -->
+{% load static i18n %}
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white text-center">
+            <h1 class="card-title mb-4">{% trans "Reservations" %}</h1>
+        </div>
+        <div class="card-body">
+            <form id="reservationForm" method="post" action="{% url 'make_reservation' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="eventLocation" class="form-label">{% trans "Event Location:" %}</label>
+                    <select id="eventLocation" name="event_location" class="form-select">
+                        <option value="">{% trans "Select a location" %}</option>
+                        {% for location in event_locations %}
+                            <option value="{{ location.id }}">{{ location.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="startTime" class="form-label">{% trans "Start Time:" %}</label>
+                    <select id="startTime" name="start_time" class="form-select">
+                        <option value="">{% trans "Select a time" %}</option>
+                        {% for time in start_times %}
+                            <option value="{{ time }}">{{ time }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="guests" class="form-label">{% trans "Guests:" %}</label>
+                    <input type="number" class="form-control" id="guests" name="guests" placeholder="{% trans "Enter number of guests" %}">
+                </div>
+                <div class="mb-3">
+                    <label for="tables" class="form-label">{% trans "Tables:" %}</label>
+                    <input type="number" class="form-control" id="tables" name="tables" placeholder="{% trans "Enter number of tables" %}">
+                </div>
+                <button type="submit" class="btn btn-primary">{% trans "Submit Reservation" %}</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

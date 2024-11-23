@@ -3,14 +3,14 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Event, Booking, CustomUser
-from .forms import LocationFilterForm, EventForm, BookingForm, ConfirmBookingForm
+from .forms import ReservationForm, LocationFilterForm, EventForm, BookingForm, ConfirmBookingForm
 from datetime import timedelta, datetime
 from django.utils import timezone
+import pytz  # Import pytz for timezone handling
 from django.http import JsonResponse
 import logging
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
-from .models import Event
 import random
 import string
 import json
@@ -274,9 +274,9 @@ def cancel_booking(request, booking_id):
         booking = get_object_or_404(Booking, id=booking_id)
         booking.canceled = True
         booking.confirmed = False  # Ensure the booking cannot be confirmed
-        booking.save()
+        booking.save(update_fields=['canceled', 'confirmed'])  # Only update the canceled and confirmed fields
         print(f"Booking with ID {booking_id} has been canceled.")
-        return JsonResponse({'status': 'success'})
+        return JsonResponse({'status': 'success', 'message': 'Booking canceled successfully.'})
     else:
         print(f"Received non-POST request to cancel booking with ID: {booking_id}")
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
@@ -299,10 +299,18 @@ def booking_detail(request, booking_id):
     context = {
         'booking': {
             'event_location': booking.event.location,
-            'start_time': booking.start_time,
+            'event': {
+                'id': booking.event.id,
+                'location': booking.event.location,
+                'start': booking.event.start.strftime('%Y-%m-%d %H:%M'),
+                'stop': booking.event.stop.strftime('%Y-%m-%d %H:%M'),
+            },
+            'start_time': booking.start_time.strftime('%Y-%m-%d %H:%M'),
+            'end_time': booking.end_time.strftime('%Y-%m-%d %H:%M'),
             'guests': booking.number_of_people,
             'tables': (booking.number_of_people + 3) // 4,
             'status': 'Confirmed' if booking.confirmed else 'Unconfirmed',
+            'canceled': booking.canceled,
             'user': {
                 'username': user.username,
                 'first_name': user.first_name,
@@ -323,7 +331,86 @@ def booking_detail(request, booking_id):
         }
     }
     return render(request, 'booking/booking_detail.html', context)
-# USERS
+# CUSTOMER VIEWS
+
+def reservation(request):
+    if request.method == 'POST':
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('reservation_success')  # Redirect to a success page
+    else:
+        form = ReservationForm()
+    
+    context = {
+        'form': form,
+        'event_locations': EventLocation.objects.all(),  # Assuming you have an EventLocation model
+        'start_times': get_available_start_times(),  # Define this function to get available times
+    }
+    return render(request, 'bookings/customers/reservations.html', context)
+
+# STAFF VIEWS
+@login_required
+@user_passes_test(staff_or_superuser_required)
+def get_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    booking_data = {
+        'id': booking.id,
+        'user': booking.user.username,
+        'event': {
+            'id': booking.event.id,
+            'location': booking.event.location,
+            'start': booking.event.start.strftime('%Y-%m-%dT%H:%M:%S'),
+            'stop': booking.event.stop.strftime('%Y-%m-%dT%H:%M:%S'),
+        },
+        'start_time': booking.start_time.strftime('%Y-%m-%dT%H:%M:%S'),
+        'end_time': booking.end_time.strftime('%Y-%m-%dT%H:%M:%S'),
+        'number_of_people': booking.number_of_people,
+        'confirmed': booking.confirmed,
+        'canceled': booking.canceled,
+        'comments_user': booking.comments_user,
+        'comments_staff': booking.comments_staff,
+        'tables': booking.tables,
+    }
+    return JsonResponse({'status': 'success', 'booking': booking_data}, status=200)
+
+@login_required
+@user_passes_test(staff_or_superuser_required)
+def edit_booking(request, booking_id):
+    if request.method == 'POST':
+        booking = get_object_or_404(Booking, id=booking_id)
+        start_time_str = request.POST.get('start_time')
+        print('start_time_str:', start_time_str)  # Debugging: Print the start_time_str value
+        # Parse the start_time without timezone information
+        booking.start_time = datetime.strptime(start_time_str, '%Y-%m-%d %H:%M')
+        booking.number_of_people = int(request.POST.get('guests'))
+        booking.status = request.POST.get('status')
+        booking.comments_user = request.POST.get('comments_user')
+        booking.comments_staff = request.POST.get('comments_staff')
+        result = booking.save()
+        if result['status'] == 'error':
+            return JsonResponse(result, status=400)
+        booking_data = {
+            'id': booking.id,
+            'user': booking.user.username,
+            'event': {
+                'id': booking.event.id,
+                'location': booking.event.location,
+                'start': booking.event.start.strftime('%Y-%m-%dT%H:%M:%S'),
+                'stop': booking.event.stop.strftime('%Y-%m-%dT%H:%M:%S'),
+            },
+            'start_time': booking.start_time.strftime('%Y-%m-%dT%H:%M:%S'),
+            'end_time': booking.end_time.strftime('%Y-%m-%dT%H:%M:%S'),
+            'number_of_people': booking.number_of_people,
+            'confirmed': booking.confirmed,
+            'canceled': booking.canceled,
+            'comments_user': booking.comments_user,
+            'comments_staff': booking.comments_staff,
+            'tables': booking.tables,
+        }
+        return JsonResponse({'status': 'success', 'booking': booking_data}, status=200)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
 @login_required
 @user_passes_test(staff_or_superuser_required)
 def create_user(request):

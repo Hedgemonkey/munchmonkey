@@ -19,6 +19,7 @@ psycopg2-binary==2.9.10
 psycopg2-pool==1.2
 pycparser==2.22
 PyJWT==2.9.0
+pytz==2024.2
 requests==2.32.3
 requests-oauthlib==2.0.0
 six==1.16.0

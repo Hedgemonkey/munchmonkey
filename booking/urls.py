@@ -8,6 +8,9 @@ from . import views
 
 urlpatterns = [
     path('locations/', views.locations, name='locations'),
+    #Customer URLS
+    path('reservation/', views.reservation, name='reservation'),
+    # Staff URLs
     path('staff/dashboard/', views.staff_dashboard, name='staff_dashboard'),
     path('staff/events/', views.events_overview, name='events_overview'),
     path('staff/events/add/', views.add_event, name='add_event'),
@@ -24,7 +27,9 @@ urlpatterns = [
     path('staff/user_management/', views.user_management, name='user_management'),
     path('staff/bookings/<int:booking_id>/', views.booking_detail, name='booking_detail'),
     path('staff/bookings/<int:booking_id>/cancel/', views.cancel_booking, name='cancel_booking'),
-    # API endpoint for available slots
+    # API endpoints
+    path('staff/api/bookings/<int:booking_id>/edit/', views.edit_booking, name='edit_booking'),
+    path('staff/api/bookings/<int:booking_id>/', views.get_booking, name='get_booking'),
     path('staff/api/users/', views.list_users, name='list_users'),
     path('staff/api/users/<int:user_id>/', views.user_details, name='user_details'),
     path('staff/api/users/<int:user_id>/role/', views.change_user_role, name='change_user_role'),

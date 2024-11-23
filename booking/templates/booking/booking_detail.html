@@ -12,62 +12,96 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="card mb-4">
+    <div class="card mb-4 {% if booking.canceled %}bg-danger text-white{% endif %}">
         <div class="card-header bg-primary text-white text-center">
             <h1 class="card-title mb-4">{% trans "Booking Details" %}</h1>
+            <p> Booking: {{ booking.event.id }} - {{ booking.event.location }} - {{ booking.canceled }}</p>
         </div>
         <div class="card-body">
+            {% if booking.canceled %}
+                <div class="alert alert-danger" role="alert">
+                    {% trans "This booking has been canceled." %}
+                </div>
+            {% endif %}
             <form id="bookingForm">
                 <div class="mb-3">
-                    <label for="eventLocation" class="form-label">{% trans "Event Location" %}</label>
-                    <p id="eventLocation">{{ booking.event_location }}</p>
+                    <label for="eventLocation" class="form-label">{% trans "Event Location:" %}</label>
+                    <p id="eventLocation">{{ booking.event.location }}</p>
+                    <input type="hidden" id="eventId" value="{{ booking.event.id }}">
+                    <input type="hidden" id="currentStartTime" value="{{ booking.start_time|date:'Y-m-d\TH:i' }}">
                 </div>
                 <div class="mb-3">
-                    <label for="startTime" class="form-label">{% trans "Start Time" %}</label>
-                    <input type="datetime-local" class="form-control" id="startTime" value="{{ booking.start_time|date:'Y-m-d\TH:i' }}">
+                    <label for="startTime" class="form-label">{% trans "Start Time:" %}</label>
+                    {% if booking.canceled %}
+                        <p id="startTimeText">{{ booking.start_time }}</p>
+                    {% else %}
+                        <select id="startTime" class="form-select">
+                            <option value="">{% trans "Select a time" %}</option>
+                        </select>
+                    {% endif %}
                 </div>
                 <div class="mb-3">
-                    <label for="guests" class="form-label">{% trans "Guests" %}</label>
-                    <input type="number" class="form-control" id="guests" value="{{ booking.guests }}">
+                    <label for="guests" class="form-label">{% trans "Guests:" %}</label>
+                    {% if booking.canceled %}
+                        <p id="guestsText">{{ booking.guests }}</p>
+                    {% else %}
+                        <input type="number" class="form-control" id="guests" value="{{ booking.number_of_people }}">
+                    {% endif %}
                 </div>
                 <div class="mb-3">
-                    <label for="tables" class="form-label">{% trans "Tables" %}</label>
+                    <label for="tables" class="form-label">{% trans "Tables:" %}</label>
                     <p id="tables">{{ booking.tables }}</p>
                 </div>
                 <div class="mb-3">
-                    <label for="status" class="form-label">{% trans "Status" %}</label>
-                    <select class="form-select" id="status">
-                        <option value="Requested" {% if booking.status == "Requested" %}selected{% endif %}>{% trans "Requested" %}</option>
-                        <option value="Confirmed" {% if booking.status == "Confirmed" %}selected{% endif %}>{% trans "Confirmed" %}</option>
-                        <option value="Cancelled" {% if booking.status == "Cancelled" %}selected{% endif %}>{% trans "Cancelled" %}</option>
-                    </select>
+                    <label for="status" class="form-label">{% trans "Status:" %}</label>
+                    {% if booking.canceled %}
+                        <p id="statusText">{{ booking.status }}</p>
+                    {% else %}
+                        <select class="form-select" id="status">
+                            <option value="Requested" {% if booking.status == "Requested" %}selected{% endif %}>{% trans "Requested" %}</option>
+                            <option value="Confirmed" {% if booking.status == "Confirmed" %}selected{% endif %}>{% trans "Confirmed" %}</option>
+                        </select>
+                    {% endif %}
                 </div>
                 <div class="mb-3">
-                    <label for="commentsUser" class="form-label">{% trans "Comments from User" %}</label>
-                    <textarea class="form-control" id="commentsUser">{{ booking.comments_user }}</textarea>
+                    <label for="commentsUser" class="form-label">{% trans "Comments from User:" %}</label>
+                    {% if booking.canceled %}
+                        <p id="commentsUserText">{{ booking.comments_user }}</p>
+                    {% else %}
+                        <textarea class="form-control" id="commentsUser">{{ booking.comments_user }}</textarea>
+                    {% endif %}
                 </div>
                 <div class="mb-3">
-                    <label for="commentsStaff" class="form-label">{% trans "Comments from Staff" %}</label>
-                    <textarea class="form-control" id="commentsStaff">{{ booking.comments_staff }}</textarea>
+                    <label for="commentsStaff" class="form-label">{% trans "Comments from Staff:" %}</label>
+                    {% if booking.canceled %}
+                        <p id="commentsStaffText">{{ booking.comments_staff }}</p>
+                    {% else %}
+                        <textarea class="form-control" id="commentsStaff">{{ booking.comments_staff }}</textarea>
+                    {% endif %}
                 </div>
-                <button type="button" class="btn btn-primary" id="saveBookingButton">{% trans "Save changes" %}</button>
+                {% if not booking.canceled %}
+                    <button type="button" class="btn btn-primary" id="saveBookingButton">{% trans "Save changes" %}</button>
+                    <button type="button" class="btn btn-danger" id="cancelBookingButton" data-bs-toggle="modal" data-bs-target="#cancelConfirmationModal">{% trans "Cancel Booking" %}</button>
+                {% else %}
+                    <a href="{% url 'add_booking' %}" class="btn btn-success">{% trans "Add New Booking" %}</a>
+                {% endif %}
             </form>
             <div class="card mt-4 mx-auto" style="max-width: 600px;">
                 <div class="card-header bg-primary text-white">
                     <h5 class="card-title">{% trans "Booked By" %}</h5>
                 </div>
-                <div class="card-body">
-                    <p><strong>{% trans "First Name" %}:</strong> {{ booking.user.first_name }}</p>
-                    <p><strong>{% trans "Last Name" %}:</strong> {{ booking.user.last_name }}</p>
-                    <p><strong>{% trans "Username" %}:</strong> {{ booking.user.username }}</p>
-                    <p><strong>{% trans "Email" %}:</strong> {{ booking.user.email }}</p>
-                    <p><strong>{% trans "Phone" %}:</strong> {{ booking.user.phone }}</p>
-                    <p><strong>{% trans "Upcoming Bookings" %}:</strong> {{ booking.user.upcoming_bookings_count }}</p>
-                    <p>&emsp;{% trans "Confirmed" %}: <span class="text-success fw-bold">{{ booking.user.confirmed_upcoming_bookings_count }}</span></p>
-                    <p>&emsp;{% trans "Unconfirmed" %}: <span class="text-danger fw-bold">{{ booking.user.unconfirmed_upcoming_bookings_count }}</span></p>
-                    <p><strong>{% trans "Total Bookings to Date" %}:</strong> {{ booking.user.total_bookings_count }}</p>
-                    <p>&emsp;{% trans "Confirmed" %}: <span class="text-success fw-bold">{{ booking.user.total_confirmed_bookings_count }}</span></p>
-                    <p>&emsp;{% trans "Unconfirmed" %}: <span class="text-danger fw-bold">{{ booking.user.total_unconfirmed_bookings_count }}</span></p>
+                <div class="card-body text-black">
+                    <p><strong>{% trans "First Name:" %}</strong> {{ booking.user.first_name }}</p>
+                    <p><strong>{% trans "Last Name:" %}</strong> {{ booking.user.last_name }}</p>
+                    <p><strong>{% trans "Username:" %}</strong> {{ booking.user.username }}</p>
+                    <p><strong>{% trans "Email:" %}</strong> {{ booking.user.email }}</p>
+                    <p><strong>{% trans "Phone:" %}</strong> {{ booking.user.phone }}</p>
+                    <p><strong>{% trans "Upcoming Bookings:" %}</strong> {{ booking.user.upcoming_bookings_count }}</p>
+                    <p>&emsp;{% trans "Confirmed:" %} <span class="text-success fw-bold">{{ booking.user.confirmed_upcoming_bookings_count }}</span></p>
+                    <p>&emsp;{% trans "Unconfirmed:" %} <span class="text-danger fw-bold">{{ booking.user.unconfirmed_upcoming_bookings_count }}</span></p>
+                    <p><strong>{% trans "Total Bookings to Date:" %}</strong> {{ booking.user.total_bookings_count }}</p>
+                    <p>&emsp;{% trans "Confirmed:" %} <span class="text-success fw-bold">{{ booking.user.total_confirmed_bookings_count }}</span></p>
+                    <p>&emsp;{% trans "Unconfirmed:" %} <span class="text-danger fw-bold">{{ booking.user.total_unconfirmed_bookings_count }}</span></p>
                 </div>
             </div>
         </div>
@@ -91,9 +125,32 @@
         </div>
     </div>
 </div>
+
+<!-- Cancel Confirmation Modal -->
+<div class="modal fade" id="cancelConfirmationModal" tabindex="-1" aria-labelledby="cancelConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="cancelConfirmationModalLabel">{% trans "Confirm Cancellation" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Are you sure you want to cancel this booking? This action cannot be undone." %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                <button type="button" class="btn btn-danger" id="confirmCancelBookingButton">{% trans "Confirm Cancellation" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% include 'includes/django_vars.html' %}
 {% endblock content %}
 
 {% block scripts %}
+<script>
+    const transBookingDetailsUpdated = "{% trans 'Booking details updated successfully.' %}";
+    const transFailedToUpdateBookingDetails = "{% trans 'Failed to update booking details.' %}";
+</script>
 <script src="{% static 'booking/js/booking_detail.js' %}"></script>
 {% endblock scripts %}

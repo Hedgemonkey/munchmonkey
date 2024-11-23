@@ -3,6 +3,11 @@
 from django import forms
 from .models import Event, Booking
 
+class ReservationForm(forms.ModelForm):
+    class Meta:
+        model = Booking
+        fields = ['event', 'start_time', 'number_of_people', 'comments_user']
+
 class LocationFilterForm(forms.Form):
     ALL_LOCATIONS = [('', 'All Locations')]
     ALL_DATES = [('', 'All Dates')]
