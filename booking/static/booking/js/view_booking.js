@@ -20,6 +20,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('booking-comments-user').textContent = data.comments_user || '';
                 document.getElementById('booking-comments-staff').textContent = data.comments_staff || '';
                 document.getElementById('booking-id').value = bookingId; // Set the booking ID in the hidden input field
+
+                // Show or hide the canceled message
+                if (data.canceled) {
+                    document.getElementById('booking-canceled').style.display = 'block';
+                    document.getElementById('confirmRejectButton').disabled = true; // Disable the Confirm/Reject button
+                } else {
+                    document.getElementById('booking-canceled').style.display = 'none';
+                    document.getElementById('confirmRejectButton').disabled = false; // Enable the Confirm/Reject button
+                }
             });
     });
 
@@ -28,4 +37,43 @@ document.addEventListener('DOMContentLoaded', function() {
         const bookingId = document.getElementById('booking-id').value;
         window.location.href = `/staff/bookings/${bookingId}/`;
     });
+
+    const confirmCancelBookingButton = document.getElementById('confirmCancelBookingButton');
+    confirmCancelBookingButton.addEventListener('click', function() {
+        const bookingId = document.getElementById('booking-id').value;
+        fetch(`/staff/bookings/${bookingId}/cancel/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                console.log(`Booking with ID ${bookingId} has been successfully canceled.`);
+                location.reload();
+            } else {
+                console.error('Failed to cancel booking:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error canceling booking:', error);
+        });
+    });
+
+    // Helper function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 });

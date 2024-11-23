@@ -5,7 +5,7 @@
 {% load custom_filters %}
 
 {% block title %}{% trans "Staff Bookings" %}{% endblock title %}
-{% block description %}{% trans "Manage booking requests and current bookings" %}{% endblock description %}
+{% block description %}{% trans "Manage bookings" %}{% endblock description %}
 
 {% block styles %}
 <link rel="stylesheet" href="{% static 'booking/css/booking_styles.css' %}">
@@ -16,6 +16,25 @@
     <div class="card mb-4">
         <div class="card-header bg-primary text-white text-center">
             <h1 class="card-title mb-4">{% trans "Booking Requests" %}</h1>
+        </div>
+        <div class="card-body text-center">
+            <p>{% trans "Use the form below to filter bookings by date range." %}</p>
+            <form method="get" class="row g-3 justify-content-center">
+                <div class="col-md-3">
+                    <label for="date_from" class="form-label">{% trans "From" %}</label>
+                    <input type="date" class="form-control" id="date_from" name="date_from" value="{{ date_from }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="date_to" class="form-label">{% trans "To" %}</label>
+                    <input type="date" class="form-control" id="date_to" name="date_to" value="{{ date_to }}">
+                </div>
+                <div class="col-md-2 align-self-end">
+                    <button type="submit" class="btn btn-primary w-100">{% trans "Filter" %}</button>
+                </div>
+                <div class="col-md-2 align-self-end">
+                    <a href="{% url 'all_bookings' %}" class="btn btn-secondary w-100">{% trans "View All Bookings" %}</a>
+                </div>
+            </form>
         </div>
         <div class="card-body">
             <div class="table-responsive d-none d-md-block">
@@ -35,7 +54,7 @@
                     </thead>
                     <tbody>
                         {% for booking in bookings %}
-                        <tr>
+                        <tr class="{% if booking.canceled %}table-danger{% endif %}">
                             <td>{{ booking.event.location }}</td>
                             <td>{{ booking.user.username }}</td>
                             <td>{{ booking.start_time }}</td>
@@ -44,7 +63,9 @@
                             <td class="text-center fw-bold d-none d-lg-table-cell">{{ booking.number_of_people|tables_needed }}</td>
                             {% is_slot_available booking.event booking.start_time booking.number_of_people as available %}
                             <td class="text-center fw-bold {% if booking.confirmed or available >= booking.number_of_people|tables_needed %}bg-success{% else %}bg-danger{% endif %} text-white">
-                                {% if booking.confirmed %}
+                                {% if booking.canceled %}
+                                <span>{% trans "Canceled" %}</span>
+                                {% elif booking.confirmed %}
                                 <span>{% trans "Yes - Booked" %}</span>
                                 {% elif available >= booking.number_of_people|tables_needed %}
                                 <span>{% trans "Yes" %}</span>
@@ -53,30 +74,28 @@
                                 {% endif %}
                             </td>
                             <td class="text-center fw-bold {% if booking.confirmed %}bg-success{% else %}bg-danger{% endif %} text-white">
-                                {% if booking.confirmed %}
+                                {% if booking.canceled %}
+                                <span>{% trans "Canceled" %}</span>
+                                {% elif booking.confirmed %}
                                 <span>{% trans "Yes" %}</span>
                                 {% else %}
                                 <span>{% trans "No" %}</span>
                                 {% endif %}
                             </td>
-                            <td class="p-0 action-cell">
-                                <div class="bg-primary">
-                                    <button type="button" class="btn btn-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#confirmBookingModal" data-booking-id="{{ booking.id }}">{% trans "Confirm/Reject" %}</button>
-                                </div>
-                                <div class="bg-secondary">
-                                    <button type="button" class="btn btn-secondary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#viewBookingModal" data-booking-id="{{ booking.id }}">{% trans "View" %}</button>
-                                </div>
+                            <td class="p-0">
+                                <button class="btn btn-info btn-sm w-100" data-bs-toggle="modal" data-bs-target="#viewBookingModal" data-booking-id="{{ booking.id }}">{% trans "View" %}</button>
+                                <button class="btn btn-warning btn-sm w-100" data-bs-toggle="modal" data-bs-target="#confirmBookingModal" {% if booking.canceled %}disabled{% endif %}>{% trans "Confirm/Reject" %}</button>
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-            <div class="d-block d-md-none">
+            <div class="d-md-none">
                 {% for booking in bookings %}
-                <div class="card mb-3">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="card-title mb-0">{{ booking.event.location }}</h5>
+                <div class="card mb-4 {% if booking.canceled %}bg-danger text-white{% endif %}">
+                    <div class="card-header">
+                        <h5 class="card-title">{{ booking.event.location }}</h5>
                     </div>
                     <div class="card-body">
                         <p><strong>{% trans "User" %}:</strong> {{ booking.user.username }}</p>
@@ -84,9 +103,10 @@
                         <p><strong>{% trans "End Time" %}:</strong> {{ booking.end_time }}</p>
                         <p><strong>{% trans "Guests" %}:</strong> {{ booking.number_of_people }}</p>
                         <p><strong>{% trans "Tables" %}:</strong> {{ booking.number_of_people|tables_needed }}</p>
-                        {% is_slot_available booking.event booking.start_time booking.number_of_people as available %}
-                        <p class="fw-bold {% if booking.confirmed or available >= booking.number_of_people|tables_needed %}bg-success{% else %}bg-danger{% endif %} text-white p-2">
-                            {% if booking.confirmed %}
+                        <p><strong>{% trans "Available" %}:</strong>
+                            {% if booking.canceled %}
+                            <span>{% trans "Canceled" %}</span>
+                            {% elif booking.confirmed %}
                             <span>{% trans "Yes - Booked" %}</span>
                             {% elif available >= booking.number_of_people|tables_needed %}
                             <span>{% trans "Yes" %}</span>
@@ -94,17 +114,17 @@
                             <span>{% trans "No, only " %}{{ available }}{% trans " left" %}</span>
                             {% endif %}
                         </p>
-                        <p class="fw-bold {% if booking.confirmed %}bg-success{% else %}bg-danger{% endif %} text-white p-2">
-                            {% if booking.confirmed %}
+                        <p><strong>{% trans "Confirmed" %}:</strong>
+                            {% if booking.canceled %}
+                            <span>{% trans "Canceled" %}</span>
+                            {% elif booking.confirmed %}
                             <span>{% trans "Yes" %}</span>
                             {% else %}
                             <span>{% trans "No" %}</span>
                             {% endif %}
                         </p>
-                        <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmBookingModal" data-booking-id="{{ booking.id }}">{% trans "Confirm/Reject" %}</button>
-                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#viewBookingModal" data-booking-id="{{ booking.id }}">{% trans "View" %}</button>
-                        </div>
+                        <button class="btn btn-info btn-sm w-100 mb-1" data-bs-toggle="modal" data-bs-target="#viewBookingModal" data-booking-id="{{ booking.id }}">{% trans "View" %}</button>
+                        <button class="btn btn-warning btn-sm w-100" data-bs-toggle="modal" data-bs-target="#confirmBookingModal" {% if booking.canceled %}disabled{% endif %}>{% trans "Confirm/Reject" %}</button>
                     </div>
                 </div>
                 {% endfor %}
@@ -114,7 +134,7 @@
     </div>
 </div>
 
-<!-- Confirm Booking Modal -->
+<!-- Confirm/Reject Booking Modal -->
 <div class="modal fade" id="confirmBookingModal" tabindex="-1" aria-labelledby="confirmBookingModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -165,12 +185,36 @@
                         <p><strong>{% trans "User Comments" %}:</strong> <span id="booking-comments-user"></span></p>
                         <p><strong>{% trans "Staff Comments" %}:</strong> <span id="booking-comments-staff"></span></p>
                         <input type="hidden" id="booking-id" value="">
+                        <p id="booking-canceled" class="text-danger" style="display: none;"><strong>{% trans "This booking has been canceled." %}</strong></p>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="goToEditBookingButton">{% trans "Go to Edit Booking" %}</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                <button type="button" class="btn btn-primary w-100 mb-2" id="goToEditBookingButton">{% trans "Go to Edit Booking" %}</button>
+                <div class="d-flex w-100">
+                    <button type="button" class="btn btn-danger flex-fill" id="cancelBookingButton" data-bs-toggle="modal" data-bs-target="#confirmCancelModal">{% trans "Cancel Booking" %}</button>
+                    <button type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                    <button type="button" class="btn btn-warning flex-fill" id="confirmRejectButton" data-bs-toggle="modal" data-bs-target="#confirmBookingModal">{% trans "Confirm/Reject" %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal for Cancel Booking -->
+<div class="modal fade" id="confirmCancelModal" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">http://hedgemonkey.ddns.net:5000/staff/user_management/
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="confirmCancelModalLabel">{% trans "Confirm Cancellation" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Are you sure you want to cancel this booking?" %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "No" %}</button>
+                <button type="button" class="btn btn-danger" id="confirmCancelBookingButton">{% trans "Yes, Cancel Booking" %}</button>
             </div>
         </div>
     </div>

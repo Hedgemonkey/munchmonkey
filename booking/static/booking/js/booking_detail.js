@@ -1,12 +1,12 @@
-// FILE: static/booking/js/booking_detail.js
-
 document.addEventListener('DOMContentLoaded', function() {
-    const bookingId = window.location.pathname.split('/').pop();
+    const bookingId = window.location.pathname.split('/').filter(Boolean).pop();
     const saveBookingButton = document.getElementById('saveBookingButton');
 
-    saveBookingButton.addEventListener('click', function() {
-        saveBookingDetails(bookingId);
-    });
+    if (saveBookingButton) {
+        saveBookingButton.addEventListener('click', function() {
+            saveBookingDetails(bookingId);
+        });
+    }
 
     function saveBookingDetails(bookingId) {
         const formData = new FormData();

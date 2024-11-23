@@ -15,6 +15,7 @@ urlpatterns = [
     path('staff/events/<int:event_id>/remove/', views.remove_event, name='remove_event'),
     path('staff/events/remove_selected/', views.remove_selected_events, name='remove_selected_events'),
     path('staff/bookings/', views.staff_bookings, name='staff_bookings'),
+    path('staff/bookings/all/', views.all_bookings, name='all_bookings'),
     path('staff/bookings/add/', views.add_booking, name='add_booking'),
     path('staff/bookings/confirm/<int:booking_id>/', views.confirm_booking, name='confirm_booking'),
     path('staff/bookings/event/<int:event_id>/', views.event_bookings, name='event_bookings'),
@@ -22,6 +23,7 @@ urlpatterns = [
     path('staff/create_user/', views.create_user, name='create_user'),
     path('staff/user_management/', views.user_management, name='user_management'),
     path('staff/bookings/<int:booking_id>/', views.booking_detail, name='booking_detail'),
+    path('staff/bookings/<int:booking_id>/cancel/', views.cancel_booking, name='cancel_booking'),
     # API endpoint for available slots
     path('staff/api/users/', views.list_users, name='list_users'),
     path('staff/api/users/<int:user_id>/', views.user_details, name='user_details'),

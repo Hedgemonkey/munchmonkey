@@ -132,7 +132,35 @@ def book_slot(request, event_id):
 
 @login_required
 @user_passes_test(staff_or_superuser_required)
+def all_bookings(request):
+    current_date = timezone.now().date()
+    bookings = Booking.objects.filter(start_time__date__gte=current_date).order_by('start_time')
+    return render(request, 'booking/staff_bookings.html', {'bookings': bookings})
+
+@login_required
+@user_passes_test(staff_or_superuser_required)
 def staff_bookings(request):
+    bookings = Booking.objects.all().order_by('start_time')
+    current_date = timezone.now().date()
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+
+    if date_from:
+        date_from = datetime.strptime(date_from, '%Y-%m-%d').date()
+    else:
+        date_from = current_date
+
+    if date_to:
+        date_to = datetime.strptime(date_to, '%Y-%m-%d').date()
+        bookings = Booking.objects.filter(start_time__date__gte=date_from, start_time__date__lte=date_to).order_by('start_time')
+    else:
+        bookings = Booking.objects.filter(start_time__date__gte=date_from).order_by('start_time')
+
+    return render(request, 'booking/staff_bookings.html', {'bookings': bookings, 'date_from': date_from, 'date_to': date_to})
+
+@login_required
+@user_passes_test(staff_or_superuser_required)
+def all_bookings(request):
     bookings = Booking.objects.all().order_by('start_time')
     return render(request, 'booking/staff_bookings.html', {'bookings': bookings})
 
@@ -238,6 +266,63 @@ def view_booking(request, booking_id):
     }
     return JsonResponse(booking_details)
 
+@login_required
+@user_passes_test(staff_or_superuser_required)
+def cancel_booking(request, booking_id):
+    if request.method == 'POST':
+        print(f"Received POST request to cancel booking with ID: {booking_id}")
+        booking = get_object_or_404(Booking, id=booking_id)
+        booking.canceled = True
+        booking.confirmed = False  # Ensure the booking cannot be confirmed
+        booking.save()
+        print(f"Booking with ID {booking_id} has been canceled.")
+        return JsonResponse({'status': 'success'})
+    else:
+        print(f"Received non-POST request to cancel booking with ID: {booking_id}")
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+@login_required
+@user_passes_test(staff_or_superuser_required)
+def booking_detail(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    user = booking.user
+
+    # Calculate booking statistics
+    current_time = timezone.now()
+    upcoming_bookings = Booking.objects.filter(user=user, start_time__gt=current_time)
+    confirmed_upcoming_bookings = upcoming_bookings.filter(confirmed=True)
+    unconfirmed_upcoming_bookings = upcoming_bookings.filter(confirmed=False)
+    total_bookings = Booking.objects.filter(user=user)
+    total_confirmed_bookings = total_bookings.filter(confirmed=True)
+    total_unconfirmed_bookings = total_bookings.filter(confirmed=False)
+
+    context = {
+        'booking': {
+            'event_location': booking.event.location,
+            'start_time': booking.start_time,
+            'guests': booking.number_of_people,
+            'tables': (booking.number_of_people + 3) // 4,
+            'status': 'Confirmed' if booking.confirmed else 'Unconfirmed',
+            'user': {
+                'username': user.username,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'name': f"{user.first_name} {user.last_name}",
+                'email': user.email,
+                'phone': user.phone_number,
+                'upcoming_bookings_count': upcoming_bookings.count(),
+                'confirmed_upcoming_bookings_count': confirmed_upcoming_bookings.count(),
+                'unconfirmed_upcoming_bookings_count': unconfirmed_upcoming_bookings.count(),
+                'total_bookings_count': total_bookings.count(),
+                'total_confirmed_bookings_count': total_confirmed_bookings.count(),
+                'total_unconfirmed_bookings_count': total_unconfirmed_bookings.count(),
+            },
+            'comments_user': booking.comments_user,
+            'comments_staff': booking.comments_staff,
+            'id': booking.id,
+        }
+    }
+    return render(request, 'booking/booking_detail.html', context)
 # USERS
 @login_required
 @user_passes_test(staff_or_superuser_required)
@@ -357,45 +442,3 @@ def edit_user_details(request, user_id):
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error'}, status=400)
 
-@login_required
-@user_passes_test(staff_or_superuser_required)
-def booking_detail(request, booking_id):
-    booking = get_object_or_404(Booking, id=booking_id)
-    user = booking.user
-
-    # Calculate booking statistics
-    current_time = timezone.now()
-    upcoming_bookings = Booking.objects.filter(user=user, start_time__gt=current_time)
-    confirmed_upcoming_bookings = upcoming_bookings.filter(confirmed=True)
-    unconfirmed_upcoming_bookings = upcoming_bookings.filter(confirmed=False)
-    total_bookings = Booking.objects.filter(user=user)
-    total_confirmed_bookings = total_bookings.filter(confirmed=True)
-    total_unconfirmed_bookings = total_bookings.filter(confirmed=False)
-
-    context = {
-        'booking': {
-            'event_location': booking.event.location,
-            'start_time': booking.start_time,
-            'guests': booking.number_of_people,
-            'tables': (booking.number_of_people + 3) // 4,
-            'status': 'Confirmed' if booking.confirmed else 'Unconfirmed',
-            'user': {
-                'username': user.username,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'name': f"{user.first_name} {user.last_name}",
-                'email': user.email,
-                'phone': user.phone_number,
-                'upcoming_bookings_count': upcoming_bookings.count(),
-                'confirmed_upcoming_bookings_count': confirmed_upcoming_bookings.count(),
-                'unconfirmed_upcoming_bookings_count': unconfirmed_upcoming_bookings.count(),
-                'total_bookings_count': total_bookings.count(),
-                'total_confirmed_bookings_count': total_confirmed_bookings.count(),
-                'total_unconfirmed_bookings_count': total_unconfirmed_bookings.count(),
-            },
-            'comments_user': booking.comments_user,
-            'comments_staff': booking.comments_staff,
-            'id': booking.id,
-        }
-    }
-    return render(request, 'booking/booking_detail.html', context)

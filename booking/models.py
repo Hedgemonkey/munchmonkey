@@ -42,6 +42,7 @@ class Booking(models.Model):
     id = models.AutoField(primary_key=True)  # Primary ID Unique field
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  # Link to CustomUser model
     confirmed = models.BooleanField(default=False)  # Confirmed field of type Boolean
+    canceled = models.BooleanField(default=False) # Canceled field of type Boolean
     comments_user = models.CharField(max_length=1024, blank=True, null=True)  # Comments from user
     comments_staff = models.CharField(max_length=1024, blank=True, null=True)  # Comments from staff
     event = models.ForeignKey(Event, on_delete=models.CASCADE)  # Link to Event model
