@@ -22,6 +22,10 @@ The MunchMonkey Pop-Up Restaurant site is intended to be used for marketing and 
 
     - [Typography](#typography)
     - [Colours](#colours)
+    - [Components](#components)<details><summary>Click to expand Components</summary>
+
+      - [Cards](#cards)
+      - [Modals](#modals)
     </details>  
   </details>
 
@@ -30,6 +34,8 @@ The MunchMonkey Pop-Up Restaurant site is intended to be used for marketing and 
 - [Features](#features)
 
 - [Testing](#testing)
+
+- [Validations](#validations)
 
 - [Deployment](#deployment)
 
@@ -312,6 +318,148 @@ class Booking(models.Model):
 
 [Back to top](#contents)
 
+## Design Choices
+
+### Typography
+
+The primary fonts used in this project are 'Roboto' and 'Raleway'. These fonts were chosen for their readability and modern appearance, which align with the overall aesthetic of the MunchMonkey brand.
+
+- **Roboto**: Used for body text and general content to ensure readability.
+- **Raleway**: Used for headings and navigation to provide a clean and stylish look.
+
+### Colours
+
+The color scheme for the MunchMonkey project was selected to create a warm and inviting atmosphere, reflecting the pop-up restaurant's brand identity. The primary colors used are:
+
+- **Primary Color**: `rgba(230, 190, 86, 0.9)` - A warm golden color used for highlights and callouts.
+- **Secondary Color**: `rgba(230, 167, 86, 0.5)` - A softer golden color used for borders and secondary elements.
+- **Background Color**: `rgba(var(--bs-primary-rgba))` - A dynamic background color that adapts to the primary theme.
+- **Text Color**: `rgba(255, 255, 255, 0.9)` - A near-white color used for text to ensure readability against the background.
+
+### Components
+
+#### Cards
+
+Cards are used throughout the project to display content in a clean and organized manner. They are used for event listings, menu items, and user information. The card design includes a header, body, and footer, with consistent styling to maintain a cohesive look.
+
+Example CSS for Cards:
+
+```css
+.card {
+  border: 1px solid rgba(230, 167, 86, 0.5);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  background-color: rgba(230, 190, 86, 0.9);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 10px;
+  font-family: "Raleway", sans-serif;
+}
+
+.card-body {
+  padding: 15px;
+  font-family: "Roboto", sans-serif;
+}
+```
+
+#### Modals
+
+Modals are used to display additional information and forms without navigating away from the current page. They are used for reservation forms, user login and registration, and detailed views of events and menu items. The modals are designed to be responsive and accessible, providing a smooth user experience.
+
+Example CSS for Modals:
+
+```css
+.modal-content {
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  background-color: rgba(230, 190, 86, 0.9);
+  color: rgba(255, 255, 255, 0.9);
+  font-family: "Raleway", sans-serif;
+}
+
+.modal-body {
+  padding: 20px;
+  font-family: "Roboto", sans-serif;
+}
+```
+
+### Example CSS
+
+Here are some example CSS rules that demonstrate the use of these fonts and colors:
+
+```css
+/* Callout Styles */
+.callout-primary {
+  background-color: rgba(var(--bs-primary-rgba));
+  color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(230, 167, 86, 0.5);
+}
+
+/* Main content */
+.main-content {
+  min-height: calc(100vh - 200px);
+}
+
+/* Change Nav Stylings */
+nav ul li a {
+  font-family: "Raleway", sans-serif !important;
+  display: block !important;
+  font-weight: 800 !important;
+}
+```
+
+These design choices help create a cohesive and visually appealing user experience, enhancing the overall look and feel of the MunchMonkey website.
+
+[Back to top](#contents)
+
+## Agile Project Management
+
+### Overview
+
+This project was developed using Agile methodologies to ensure a flexible and iterative approach to development. The Agile practices helped in managing the project efficiently, accommodating changes, and delivering a high-quality product.
+
+### MoSCoW Prioritization
+
+The MoSCoW method was used to prioritize tasks and features based on their importance and impact. The tasks were categorized into four groups:
+
+- **Must Have**: Essential features and tasks that are critical for the project's success.
+- **Should Have**: Important features and tasks that add significant value but are not critical.
+- **Could Have**: Desirable features and tasks that enhance the project but are not essential.
+- **Won't Have**: Features and tasks that are not included in the current scope but may be considered for future development.
+
+### GitHub KanBan Board
+
+A GitHub KanBan board was used to manage the project's tasks and track progress. The board was divided into columns representing different stages of development:
+
+- **Epics**: High-level features and goals that are broken down into smaller tasks.
+- **To Do**: Tasks that are ready to be worked on in the current iteration.
+- **In Progress**: Tasks that are currently being worked on.
+- **Final Stages**: Tasks that have been completed and are undergoing final checks and reviews.
+- **Done**: Tasks that have been reviewed and approved.
+
+By using this structure, the project was able to maintain clear visibility into the status of each task and ensure that work was progressing smoothly through each stage of development.
+
+
+### Benefits of Agile Practices
+
+Using Agile practices, including MoSCoW prioritization and the GitHub KanBan board, provided several benefits:
+
+- **Flexibility**: Allowed for changes and adjustments to be made throughout the development process.
+- **Transparency**: Provided clear visibility into the project's progress and status.
+- **Collaboration**: Facilitated communication and collaboration among team members.
+- **Focus**: Helped prioritize tasks and focus on delivering the most important features first.
+- **Continuous Improvement**: Enabled iterative development and continuous improvement of the project.
+
+By following Agile methodologies, the project was able to adapt to changes, manage tasks efficiently, and deliver a high-quality product.
+
+[Back to top](#contents)
+
 ## Testing
 
 ### Overview
@@ -359,6 +507,86 @@ The `BookingModelTests` class contains tests for the `Booking` model. This model
 4. **test_booking_save**: 
    - **Purpose**: Verifies that the `save` method correctly sets the `end_time` attribute.
    - **Details**: This test checks that the `save` method sets the `end_time` to 44 minutes after the `start_time` and correctly handles the availability of tables.
+
+[Back to top](#contents)
+
+## Validations
+
+All code in this project has been passed through validators to ensure it meets ES6 standards and adheres to best practices for HTML and CSS.
+
+### Validation Tools Used
+
+- **ESLint**: Used to analyze the code for potential errors and enforce coding standards. The ESLint configuration is set to follow ES6 standards and best practices.
+- **JSHint**: Used to detect errors and potential problems in the JavaScript code. Configured to support ES6 syntax and features.
+- **Prettier**: Used to format the code consistently, ensuring readability and adherence to style guidelines.
+- **W3C Validator**: Used to validate HTML and CSS code to ensure it meets web standards.
+- **Pylint**: Used to analyze the Python code for potential errors and enforce coding standards. Configured to follow PEP 8 guidelines.
+
+### Validation Process
+
+1. **ESLint**: The code was run through ESLint with the following configuration:
+```json
+    {
+        "env": {
+            "browser": true,
+            "es6": true
+        },
+        "extends": "eslint:recommended",
+        "parserOptions": {
+            "ecmaVersion": 2015,
+            "sourceType": "module"
+        },
+        "rules": {
+            "indent": ["error", 4],
+            "linebreak-style": ["error", "unix"],
+            "quotes": ["error", "single"],
+            "semi": ["error", "always"]
+        }
+    }
+```
+
+2. **JSHint**: The code was validated using JSHint with the following configuration:
+```json
+    {
+        "esversion": 6,
+        "browser": true,
+        "devel": true
+    }
+```
+
+3. **Prettier**: The code was formatted using Prettier with the following configuration:
+```json
+    {
+        "printWidth": 100,
+        "tabWidth": 4,
+        "useTabs": false,
+        "semi": true,
+        "singleQuote": true,
+        "trailingComma": "es5",
+        "bracketSpacing": true,
+        "arrowParens": "avoid"
+    }
+```
+
+4. **W3C Validator**: The HTML and CSS code was validated using the W3C Validator to ensure it meets web standards. The validation process involved copying the code into the W3C Validator tool and checking for any errors or warnings.
+
+5. **Pylint**: The Python code was run through Pylint with the following configuration:
+```ini
+    [MASTER]
+    ignore=venv
+
+    [MESSAGES CONTROL]
+    disable=C0111,  # Missing docstring
+            C0103,  # Variable name doesn't conform to snake_case
+            R0903,  # Too few public methods
+
+    [FORMAT]
+    max-line-length=100,  # Line length should not exceed 100 characters
+```
+
+### Results
+
+All code passed the validation checks with no errors, ensuring that it adheres to ES6 standards and best practices. This helps maintain high code quality and readability throughout the project.
 
 [Back to top](#contents)
 
