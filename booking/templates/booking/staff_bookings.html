@@ -84,7 +84,7 @@
                             </td>
                             <td class="p-0">
                                 <button class="btn btn-info btn-sm w-100" data-bs-toggle="modal" data-bs-target="#viewBookingModal" data-booking-id="{{ booking.id }}">{% trans "View" %}</button>
-                                <button class="btn btn-warning btn-sm w-100" data-bs-toggle="modal" data-bs-target="#confirmBookingModal" {% if booking.canceled %}disabled{% endif %}>{% trans "Confirm/Reject" %}</button>
+                                <button class="btn btn-warning btn-sm w-100" data-bs-toggle="modal" data-bs-target="#confirmBookingModal" data-booking-id="{{ booking.id }}" {% if booking.canceled %}disabled{% endif %}>{% trans "Confirm/Reject" %}</button>
                             </td>
                         </tr>
                         {% endfor %}
@@ -124,7 +124,7 @@
                             {% endif %}
                         </p>
                         <button class="btn btn-info btn-sm w-100 mb-1" data-bs-toggle="modal" data-bs-target="#viewBookingModal" data-booking-id="{{ booking.id }}">{% trans "View" %}</button>
-                        <button class="btn btn-warning btn-sm w-100" data-bs-toggle="modal" data-bs-target="#confirmBookingModal" {% if booking.canceled %}disabled{% endif %}>{% trans "Confirm/Reject" %}</button>
+                        <button class="btn btn-warning btn-sm w-100" data-bs-toggle="modal" data-bs-target="#confirmBookingModal" data-booking-id="{{ booking.id }}" {% if booking.canceled %}disabled{% endif %}>{% trans "Confirm/Reject" %}</button>
                     </div>
                 </div>
                 {% endfor %}
@@ -145,6 +145,7 @@
             <div class="modal-body">
                 <form id="confirm-booking-form" method="post">
                     {% csrf_token %}
+                    <input type="hidden" id="confirmBookingId">
                     <div class="mb-3">
                         <label for="confirm-booking-confirmed" class="form-label">{% trans "Confirmed" %}</label>
                         <select id="confirm-booking-confirmed" name="confirmed" class="form-select">
@@ -203,7 +204,7 @@
 
 <!-- Confirmation Modal for Cancel Booking -->
 <div class="modal fade" id="confirmCancelModal" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
-    <div class="modal-dialog">http://hedgemonkey.ddns.net:5000/staff/user_management/
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="confirmCancelModalLabel">{% trans "Confirm Cancellation" %}</h5>

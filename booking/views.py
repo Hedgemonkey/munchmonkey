@@ -58,6 +58,8 @@ def add_event(request):
 @user_passes_test(staff_or_superuser_required)
 def edit_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
+    if event.start.tzinfo is not None:
+        event.start = event.start.replace(tzinfo=None)
     if request.method == 'POST':
         form = EventForm(request.POST, instance=event)
         if form.is_valid():
@@ -193,11 +195,17 @@ def confirm_booking(request, booking_id):
             booking.confirmed = form.cleaned_data['confirmed']
             booking.comments_staff = form.cleaned_data.get('comments_staff', '')
             print(f"Updating booking {booking_id} with comments_staff: {booking.comments_staff}")
+            # Ensure the start_time and end_time are naive
+            if booking.start_time.tzinfo is not None:
+                booking.start_time = booking.start_time.replace(tzinfo=None)
+            if booking.end_time.tzinfo is not None:
+                booking.end_time = booking.end_time.replace(tzinfo=None)
             booking.save()
-            return redirect('staff_bookings')
+            return JsonResponse({'status': 'success'})
         else:
             print("Form is not valid")
             print(form.errors)
+            return JsonResponse({'status': 'error', 'errors': form.errors})
     else:
         form = ConfirmBookingForm(instance=booking)
     return render(request, 'booking/confirm_booking.html', {'form': form, 'booking': booking})
@@ -275,8 +283,14 @@ def booking_detail(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
     user = booking.user
 
+    # Ensure booking start_time and end_time are naive
+    if booking.start_time.tzinfo is not None:
+        booking.start_time = booking.start_time.replace(tzinfo=None)
+    if booking.end_time.tzinfo is not None:
+        booking.end_time = booking.end_time.replace(tzinfo=None)
+
     # Calculate booking statistics
-    current_time = timezone.now()
+    current_time = timezone.now().replace(tzinfo=None)
     upcoming_bookings = Booking.objects.filter(user=user, start_time__gt=current_time)
     confirmed_upcoming_bookings = upcoming_bookings.filter(confirmed=True)
     unconfirmed_upcoming_bookings = upcoming_bookings.filter(confirmed=False)
@@ -353,13 +367,22 @@ def edit_booking(request, booking_id):
         print('start_time_str:', start_time_str)  # Debugging: Print the start_time_str value
         # Parse the start_time without timezone information
         booking.start_time = datetime.strptime(start_time_str, '%Y-%m-%d %H:%M')
+        # Ensure the start_time is naive
+        if booking.start_time.tzinfo is not None:
+            booking.start_time = booking.start_time.replace(tzinfo=None)
+        
+        # If end_time is being set or updated, ensure it is also naive
+        end_time_str = request.POST.get('end_time')
+        if end_time_str:
+            booking.end_time = datetime.strptime(end_time_str, '%Y-%m-%d %H:%M')
+            if booking.end_time.tzinfo is not None:
+                booking.end_time = booking.end_time.replace(tzinfo=None)
+
         booking.number_of_people = int(request.POST.get('guests'))
-        booking.status = request.POST.get('status')
+        booking.confirmed = request.POST.get('status') == 'Confirmed'
         booking.comments_user = request.POST.get('comments_user')
         booking.comments_staff = request.POST.get('comments_staff')
-        result = booking.save()
-        if result['status'] == 'error':
-            return JsonResponse(result, status=400)
+        booking.save()
         booking_data = {
             'id': booking.id,
             'user': booking.user.username,
@@ -551,7 +574,7 @@ def reservation(request):
         if view_all:
             user_reservations = Booking.objects.filter(user=request.user)
         else:
-            user_reservations = Booking.objects.filter(user=request.user, start_time__gte=datetime.now())
+            user_reservations = Booking.objects.filter(user=request.user, start_time__gte=datetime.now().replace(tzinfo=None))
     else:
         user_reservations = []
 

@@ -53,6 +53,12 @@ class Booking(models.Model):
         return (self.number_of_people + 3) // 4
 
     def save(self, *args, **kwargs):
+        # Ensure the start_time and end_time are naive
+        if self.start_time.tzinfo is not None:
+            self.start_time = self.start_time.replace(tzinfo=None)
+        if self.end_time.tzinfo is not None:
+            self.end_time = self.end_time.replace(tzinfo=None)
+
         # If the booking is being canceled, skip the slot availability check
         if self.canceled:
             super().save(*args, **kwargs)
@@ -69,9 +75,6 @@ class Booking(models.Model):
         for slot in available_slots:
             # Convert slot to naive datetime
             slot_naive = slot.replace(tzinfo=None)
-            # Debugging: Print the values of self.start_time and slot_naive
-            print(f"self.start_time: {self.start_time} (tzinfo: {self.start_time.tzinfo})")
-            print(f"slot_naive: {slot_naive} (tzinfo: {slot_naive.tzinfo})")
             if slot_naive <= self.start_time < slot_naive + timedelta(minutes=45):
                 # Check if the slot is available
                 if self.event.get_available_tables(slot) < tables_needed:

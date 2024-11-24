@@ -86,7 +86,7 @@
                 <div class="card-body">
                     {% if user.is_authenticated %}
                         <div class="mb-3 text-end">
-                            <a href="{% url 'reservation' %}?view_all={% if view_all %}false{% else %}true{% endif %}" class="btn btn-link">
+                            <a href="{% url 'reservation' %}?view_all={% if view_all %}false{% else %}true{% endif %}" class="btn btn-primary">
                                 {% if view_all %}
                                     {% trans "View Upcoming Reservations" %}
                                 {% else %}
