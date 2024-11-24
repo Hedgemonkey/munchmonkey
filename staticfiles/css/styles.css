@@ -86,6 +86,7 @@
   box-sizing: border-box;
 }
 
+
 /* Text shadows */
 
 .text-shadow-sm {
@@ -11090,4 +11091,12 @@ p {
 /* Main conent */
 .main-content {
   min-height: calc(100vh - 200px);
+}
+
+/* Change Nav Stylings */
+nav ul li a {
+  font-family: "Raleway", sans-serif !important;
+  display: block !important;
+  font-size: 4rem !important;
+  font-weight: 900 !important;
 }

@@ -610,6 +610,11 @@ def make_reservation(request):
             # Ensure the start_time is naive
             if booking.start_time.tzinfo is not None:
                 booking.start_time = booking.start_time.replace(tzinfo=None)
+            # Ensure the end_time is set and naive
+            if not booking.end_time:
+                booking.end_time = booking.start_time + timedelta(minutes=44)
+            elif booking.end_time.tzinfo is not None:
+                booking.end_time = booking.end_time.replace(tzinfo=None)
             booking.user = request.user  # Set the user field to the current user
             booking.save()
             return JsonResponse({'success': True, 'booking_id': booking.id})
