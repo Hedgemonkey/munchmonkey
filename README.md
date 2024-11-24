@@ -62,11 +62,11 @@ The customers will also be able to see the Menus that will be availiable at any 
 ## Screenshots
 | Large Display: |
 |----------------|
-| ![Large Screen]('assets/img/large_screen.jpg') |
+| ![Large Screen](assets/img/large_screen.jpg) |
 
 | Mobile Display: |
 |----------------|
-| ![Small Screen]('assets/img/small_screen.jpg') |
+| ![Small Screen](assets/img/small_screen.jpg) |
 
 
 [Back to top](#contents)
