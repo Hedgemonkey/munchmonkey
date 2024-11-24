@@ -2,12 +2,20 @@
 
 The MunchMonkey Pop-Up Restaurant site is intended to be used for marketing and promotional purposes for the pop-up restaurant **MunchMonkey**, providing users with an easy way to view the locations and times that the restaurant will be available, as well as the menu items that will be available. They will also be able to register an account in order to make reservations and provide reviews and feedback!
 
+Live Site: [https://munchmonkey-bf0429fa9b54.herokuapp.com/](https://munchmonkey-bf0429fa9b54.herokuapp.com/)
+Test credentials:
+- Username: superuser
+- Password: ReallySup3r
+
+
 ## Contents
 
 <details>
 <summary>Click here for Table of Contents</summary>
 
 - [Project Goals](#project-goals)
+
+- [Screenshots](#screenshots)
 
 - [User Experience](#user-experience)<details><summary>Click to expand User Experience</summary>
 
@@ -51,17 +59,66 @@ The customers will also be able to see the Menus that will be availiable at any 
 
 [Back to top](#contents)
 
+## Screenshots
+| Large Display: |
+|----------------|
+| ![Large Screen](assets/img/large_screen.jpg) |
+| ![Large Screen](assets/img/large_screen.jpg) |
+
+| Mobile Display: | Mobile Display: |
+|----------------|
+| ![Small Screen](assets/img/small_screen.jpg) |
+| ![Small Screen](assets/img/mobile_screen.jpg) | ![Small Screen](assets/img/mobile_screen2.jpg) |
+
+
+
+[Back to top](#contents)
+
 ## User Experience
 
 ### Epics
 
-The epics of this project are listed below
+The epics of this project are listed below. Each epic is accessible through GitHub Projects, where you can view the KanBan board for detailed progress and task management.
 
-- Initial Django Setup
-- User Access
-- Templates, Navigation and Styles
-- Implementing Tests
-- Booking Management
+- **Initial Django Setup**: Setting up the Django framework, including project configuration, app creation, and initial settings.
+- **User Access**: Implementing user authentication and authorization, including registration, login, logout, and user profile management.
+- **Templates, Navigation and Styles**: Designing and implementing the front-end templates, navigation structure, and styling using CSS and Bootstrap.
+- **Implementing Tests**: Writing and running unit tests for models, views, and templates to ensure the application functions correctly.
+- **Booking Management**: Developing the booking system, including event creation, reservation management, and administrative controls.
+
+### User Stories
+
+Below are some basic user stories for each epic. Additional user stories can be found on the GitHub KanBan board.
+
+#### Initial Django Setup
+
+- As a **developer**, I can **set up the Django project** so that **I have a structured framework to build the application**.
+- As a **developer**, I can **create Django apps** so that **I can organize the project into manageable components**.
+
+#### User Access
+
+- As a **user**, I can **register an account** so that **I can make reservations and manage my bookings**.
+- As a **user**, I can **log in and log out** so that **I can access my account securely**.
+- As a **user**, I can **update my profile** so that **I can keep my contact information current**.
+
+#### Templates, Navigation and Styles
+
+- As a **user**, I can **navigate the site easily** so that **I can find the information I need quickly**.
+- As a **user**, I can **view a visually appealing site** so that **I have a pleasant browsing experience**.
+- As a **developer**, I can **use reusable templates** so that **I can maintain consistency across the site**.
+
+#### Implementing Tests
+
+- As a **developer**, I can **write unit tests for models** so that **I can ensure the data integrity of the application**.
+- As a **developer**, I can **write unit tests for views** so that **I can verify the correct functionality of the application**.
+- As a **developer**, I can **run tests automatically** so that **I can catch errors early in the development process**.
+
+#### Booking Management
+
+- As a **user**, I can **view available events** so that **I can choose an event to attend**.
+- As a **user**, I can **make a reservation** so that **I can secure a spot at an event**.
+- As a **manager**, I can **view reservation requests** so that **I can confirm or deny bookings**.
+- As a **manager**, I can **add or remove event dates and locations** so that **I can manage the availability of the restaurant**.
 
 [Back to top](#contents)
 
@@ -510,6 +567,38 @@ The `BookingModelTests` class contains tests for the `Booking` model. This model
 
 [Back to top](#contents)
 
+### Manual Testing
+
+Extensive manual testing has been carried out throughout the development of this project. Multiple people across different devices were involved in testing the application, reporting issues, and providing feedback. This collaborative approach helped identify and resolve various bugs and usability issues.
+
+#### Devices Used for Testing
+
+- Desktop (Windows, macOS, Linux)
+- Tablets (iOS, Android)
+- Smartphones (iOS, Android)
+
+#### Common Bugs and Solutions
+
+1. **Responsive Design Issues**:
+   - **Problem**: Some elements were not displaying correctly on smaller screens.
+   - **Solution**: Implemented responsive design techniques using CSS media queries to ensure that the layout adapts to different screen sizes.
+
+2. **Form Validation Errors**:
+   - **Problem**: Users were able to submit forms with invalid data.
+   - **Solution**: Added client-side and server-side validation to ensure that all required fields are filled out correctly before submission.
+
+3. **Navigation Bar Overlapping Content**:
+   - **Problem**: The navigation bar was overlapping with the main content on certain screen sizes.
+   - **Solution**: Adjusted the CSS to ensure that the navigation bar is properly positioned and does not overlap with the content.
+
+4. **Cross-Browser Compatibility**:
+   - **Problem**: Certain features were not working correctly in all browsers.
+   - **Solution**: Tested the application in multiple browsers and made necessary adjustments to ensure compatibility across all major browsers.
+
+By conducting extensive manual testing and addressing these common issues, the project was able to deliver a robust and user-friendly application.
+
+[Back to top](#contents)
+
 ## Validations
 
 All code in this project has been passed through validators to ensure it meets ES6 standards and adheres to best practices for HTML and CSS.
@@ -587,6 +676,103 @@ All code in this project has been passed through validators to ensure it meets E
 ### Results
 
 All code passed the validation checks with no errors, ensuring that it adheres to ES6 standards and best practices. This helps maintain high code quality and readability throughout the project.
+
+[Back to top](#contents)
+
+## Deployment
+
+This project has been deployed to Heroku. Below are the instructions on how to clone or fork the GitHub repository and deploy the project to Heroku.
+
+### Cloning the Repository
+
+To clone the repository, follow these steps:
+
+1. Open your terminal or command prompt.
+2. Navigate to the directory where you want to clone the repository.
+3. Run the following command:
+
+    ```sh
+    git clone https://github.com/hedgemonkey/munchmonkey.git
+    ```
+
+4. Navigate into the cloned repository:
+
+    ```sh
+    cd munchmonkey
+    ```
+
+### Forking the Repository
+
+To fork the repository, follow these steps:
+
+1. Go to the GitHub repository page: [https://github.com/hedgemonkey/munchmonkey](https://github.com/hedgemonkey/munchmonkey)
+2. Click the "Fork" button in the top-right corner of the page.
+3. Follow the prompts to create a fork of the repository in your own GitHub account.
+
+### Deploying to Heroku
+
+To deploy the project to Heroku, follow these steps:
+
+1. Create a Heroku account if you don't already have one: [https://www.heroku.com/](https://www.heroku.com/)
+2. Install the Heroku CLI: [https://devcenter.heroku.com/articles/heroku-cli](https://devcenter.heroku.com/articles/heroku-cli)
+3. Log in to your Heroku account using the CLI:
+
+    ```sh
+    heroku login
+    ```
+
+4. Navigate to the project directory:
+
+    ```sh
+    cd munchmonkey
+    ```
+
+5. Create a new Heroku app:
+
+    ```sh
+    heroku create
+    ```
+
+6. Set up the Heroku remote repository:
+
+    ```sh
+    git remote add heroku https://git.heroku.com/your-heroku-app.git
+    ```
+
+7. Deploy the project to Heroku:
+
+    ```sh
+    git push heroku main
+    ```
+
+8. Set up the necessary environment variables in Heroku. You can do this through the Heroku dashboard or using the CLI:
+
+    ```sh
+    heroku config:set DEBUG=False
+    heroku config:set SECRET_KEY=your-secret-key
+    heroku config:set DATABASE_URL=your-database-url
+    ```
+
+9. Run database migrations on Heroku:
+
+    ```sh
+    heroku run python manage.py migrate
+    ```
+
+10. Create a superuser account for testing:
+
+    ```sh
+    heroku run python manage.py createsuperuser
+    ```
+
+### Accessing the Deployed Project
+
+The project is deployed at the following URL: [https://munchmonkey-bf0429fa9b54.herokuapp.com/](https://munchmonkey-bf0429fa9b54.herokuapp.com/)
+
+### Manager/Superuser Account for Testing
+
+- **Username**: superuser
+- **Password**: ReallySup3r
 
 [Back to top](#contents)
 
