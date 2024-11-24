@@ -527,7 +527,9 @@ def edit_user_details(request, user_id):
 
 def locations(request):
     form = LocationFilterForm(request.GET or None)
-    events = Event.objects.all()
+
+    current_date = timezone.now().date()
+    events = Event.objects.filter(start__date__gte=current_date)
 
     if form.is_valid():
         if form.cleaned_data['location']:
@@ -536,6 +538,9 @@ def locations(request):
             events = events.filter(start__date=form.cleaned_data['date'])
 
     events = events.order_by('start')
+    for event in events:
+        slots = event.calculate_available_slots()
+        event.available_slots = len([slot for slot in slots if event.get_available_tables(slot) > 0])
 
     return render(request, 'booking/locations.html', {'form': form, 'events': events})
 
@@ -556,13 +561,19 @@ def get_available_start_times(event):
 
 @login_required
 def reservation(request):
+    event_id = request.GET.get('event_id')
     selected_location = request.GET.get('event_location')
     selected_date = request.GET.get('event_date')
     view_all = request.GET.get('view_all', 'false') == 'true'
     selected_event = None
     start_times = []
 
-    if selected_location and selected_date:
+    if event_id:
+        selected_event = get_object_or_404(Event, id=event_id)
+        selected_location = selected_event.location
+        selected_date = selected_event.start.date()
+        start_times = get_available_start_times(selected_event)
+    elif selected_location and selected_date:
         # Parse the date to ensure it's in the correct format
         parsed_date = parse_date(selected_date)
         if parsed_date:

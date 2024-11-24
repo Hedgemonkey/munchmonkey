@@ -4,7 +4,8 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{% trans "Locations" %}{% endblock %}
+{% block title %}{% trans "MunchMonkey - Upcomming Events" %}{% endblock %}
+{% block description %}{% trans "Discover upcoming events" %}{% endblock description %}
 
 {% block content %}
 <div class="container mt-5">
@@ -16,9 +17,8 @@
         <div class="card-body text-center">
             <form method="get" class="row g-3 justify-content-center" id="filter-form">
                 <div class="col-md-4">
-                    <label for="id_location" class="form-label">{% trans "Select by Location" %}</label>
+                    <label for="id_location" class="form-label">{% trans "Select by Event Location" %}</label>
                     <select name="location" id="id_location" class="form-select">
-                        <option value="">{% trans "All Locations" %}</option>
                         {% for value, label in form.location.field.choices %}
                             <option value="{{ value }}">{{ label }}</option>
                         {% endfor %}
@@ -47,6 +47,7 @@
                         <p>{% trans "Start" %}: {{ event.start }}</p>
                         <p>{% trans "Stop" %}: {{ event.stop }}</p>
                         <p>{% trans "Available Slots" %}: {{ event.available_slots }}</p>
+                        <button class="btn btn-primary" onclick="location.href='{% url 'reservation' %}?event_id={{ event.id }}'">{% trans "Make a Reservation" %}</button>
                     </div>
                 </div>
             </div>

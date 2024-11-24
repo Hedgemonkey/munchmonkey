@@ -11,6 +11,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const bookingConfirmationModal = new bootstrap.Modal(document.getElementById('bookingConfirmationModal'));
     const bookingIdSpan = document.getElementById('bookingId');
 
+    // Auto-select the location and date fields if provided by the server
+    const selectedLocation = eventSelect.getAttribute('data-selected-location');
+    const selectedDate = dateSelect.getAttribute('data-selected-date');
+
+    if (selectedLocation) {
+        eventSelect.value = selectedLocation;
+        console.log('Auto-selected event location:', selectedLocation);
+    }
+
+    if (selectedDate) {
+        dateSelect.value = selectedDate;
+        console.log('Auto-selected event date:', selectedDate);
+    }
+
     if (eventSelect) {
         eventSelect.addEventListener('change', function() {
             console.log('Event location changed:', eventSelect.value);

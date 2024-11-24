@@ -1,6 +1,8 @@
 <!-- FILE: booking/templates/booking/customers/reservations.html -->
 {% extends "base.html" %}
 {% load static i18n %}
+{% block title %}{% trans "MunchMonkey - Reservations" %}{% endblock title %}
+{% block description %}{% trans "Make a reservation" %}{% endblock description %}
 
 {% block content %}
 <div class="container mt-4">
@@ -19,7 +21,7 @@
                     <form id="quickSearchForm" method="get" action="{% url 'reservation' %}">
                         <div class="mb-3">
                             <label for="eventLocation" class="form-label">{% trans "Event Location:" %}</label>
-                            <select id="eventLocation" name="event_location" class="form-select" onchange="this.form.submit()">
+                            <select id="eventLocation" name="event_location" class="form-select" data-selected-location="{{ selected_location }}" onchange="this.form.submit()">
                                 <option value="">{% trans "Select a location" %}</option>
                                 {% for location in event_locations %}
                                     <option value="{{ location }}" {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
@@ -28,7 +30,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="eventDate" class="form-label">{% trans "Event Date:" %}</label>
-                            <select id="eventDate" name="event_date" class="form-select" onchange="this.form.submit()">
+                            <select id="eventDate" name="event_date" class="form-select" data-selected-date="{{ selected_date|date:'Y-m-d' }}" onchange="this.form.submit()">
                                 <option value="">{% trans "Select a date" %}</option>
                                 {% for date in event_dates %}
                                     <option value="{{ date|date:'Y-m-d' }}" {% if date|date:'Y-m-d' == selected_date %}selected{% endif %}>{{ date|date:'Y-m-d' }}</option>
