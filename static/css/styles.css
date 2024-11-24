@@ -58,7 +58,7 @@
   --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
-  --bs-body-font-family: Lora, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  --bs-body-font-family: 'Roboto', sans-serif;
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
   --bs-body-line-height: 1.5;
@@ -78,6 +78,41 @@
   --bs-link-hover-color: #b88645;
   --bs-code-color: #d63384;
   --bs-highlight-bg: #fff3cd;
+}
+
+.bg-primary {
+  background-color: #ff6f61 !important; /* Example of a more vibrant color */
+}
+
+.bg-secondary {
+  background-color: #4a90e2 !important; /* Example of a complementary color */
+}
+
+.bg-faded {
+  background-color: #f8f9fa !important; /* Light background for contrast */
+}
+
+/* Update the section heading styles */
+.section-heading-upper {
+  font-size: 1.25rem;
+  color: #ff6f61; /* Match the primary color */
+}
+
+.section-heading-lower {
+  font-size: 2rem;
+  color: #4a90e2; /* Match the secondary color */
+}
+
+/* Adjust the product item title and description layout */
+.product-item-title {
+  position: relative;
+  z-index: 1;
+}
+
+.product-item-description {
+  position: relative;
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.9); /* Add a semi-transparent background to improve readability */
 }
 
 *,

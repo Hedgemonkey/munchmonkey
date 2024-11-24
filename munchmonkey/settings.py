@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'custom_auth',
     'booking',
     'welcome',
+    'about',
+    'menu',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

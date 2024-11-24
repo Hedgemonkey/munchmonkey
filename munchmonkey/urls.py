@@ -10,4 +10,6 @@ urlpatterns = [
     path("accounts/profile/", TemplateView.as_view(template_name="profile.html")),
     path('', include('welcome.urls'), name='home'),
     path('', include('booking.urls')),
+    path('', include('about.urls')),
+    path('', include('menu.urls')),
 ]
