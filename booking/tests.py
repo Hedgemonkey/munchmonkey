@@ -1,1 +1,0 @@
-# FILE: booking/tests.py
