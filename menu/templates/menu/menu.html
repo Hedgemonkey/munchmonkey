@@ -1,0 +1,106 @@
+<!-- FILE: booking/templates/booking/menu.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "MunchMonkey - Menu" %}{% endblock title %}
+{% block description %}{% trans "Check out our munch!" %}{% endblock description %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center text-white">{% trans "Our Munch" %}</h1>
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white text-center">
+            <h5 class="card-title">{% trans "Discover our delicious offerings" %}</h5>
+        </div>
+        <div class="card-body text-center">
+            <!-- Add your menu content here -->
+            <p>{% trans "Welcome to MunchMonkey! Explore a sample of what kind of dishes we have on our delicious menu featuring gourmet street food with an Asian influence, made from the freshest ingredients." %}</p>
+        </div>
+    </div>
+</div>
+
+<section class="page-section">
+    <div class="container">
+        <div class="product-item">
+            <div class="product-item-title d-flex">
+                <div class="bg-faded p-5 d-flex ms-auto rounded">
+                    <h2 class="section-heading mb-0">
+                        <span class="section-heading-upper">Savory Delights</span>
+                        <span class="section-heading-lower">Bao Buns</span>
+                    </h2>
+                </div>
+            </div>
+            <img class="product-item-img mx-auto d-flex rounded img-fluid mb-3 mb-lg-0" src="{% static 'assets/img/bao.jpg' %}" alt="..." />
+            <div class="product-item-description d-flex ms-auto">
+                <div class="bg-faded p-5 rounded">
+                    <p class="mb-0">Our fluffy bao buns are filled with a variety of savory ingredients, including braised pork belly, crispy chicken, and tofu with pickled vegetables. Each bite is a perfect blend of flavors and textures, bringing a taste of Asia to your plate.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="page-section">
+    <div class="container">
+        <div class="product-item">
+            <div class="product-item-title d-flex">
+                <div class="bg-faded p-5 d-flex ms-auto rounded">
+                    <h2 class="section-heading mb-0">
+                        <span class="section-heading-upper">Street Food Classics</span>
+                        <span class="section-heading-lower">Korean BBQ Tacos</span>
+                    </h2>
+                </div>
+            </div>
+            <img class="product-item-img mx-auto d-flex rounded img-fluid mb-3 mb-lg-0" src="{% static 'assets/img/korean_tacos.jpg' %}" alt="..." />
+            <div class="product-item-description d-flex me-auto">
+                <div class="bg-faded p-5 rounded">
+                    <p class="mb-0">Our Korean BBQ tacos are a fusion of flavors, featuring marinated beef, spicy kimchi, and fresh cilantro, all wrapped in a soft tortilla. These tacos are a perfect example of how we blend traditional Asian flavors with modern street food concepts.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="page-section">
+    <div class="container">
+        <div class="product-item">
+            <div class="product-item-title d-flex">
+                <div class="bg-faded p-5 d-flex ms-auto rounded">
+                    <h2 class="section-heading mb-0">
+                        <span class="section-heading-upper">Fresh and Flavorful</span>
+                        <span class="section-heading-lower">Vietnamese Pho</span>
+                    </h2>
+                </div>
+            </div>
+            <img class="product-item-img mx-auto d-flex rounded img-fluid mb-3 mb-lg-0" src="{% static 'assets/img/vietnamese_pho.jpg' %}" alt="..." />
+            <div class="product-item-description d-flex me-auto">
+                <div class="bg-faded p-5 rounded">
+                    <p class="mb-0">Our Vietnamese pho is a fragrant and flavorful noodle soup, made with a rich broth, tender slices of beef or chicken, fresh herbs, and rice noodles. It's a comforting and satisfying dish that showcases the best of Vietnamese cuisine.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="page-section">
+    <div class="container">
+        <div class="product-item">
+            <div class="product-item-title d-flex">
+                <div class="bg-faded p-5 d-flex ms-auto rounded">
+                    <h2 class="section-heading mb-0">
+                        <span class="section-heading-upper">Sweet Treats</span>
+                        <span class="section-heading-lower">Matcha Green Tea Ice Cream</span>
+                    </h2>
+                </div>
+            </div>
+            <img class="product-item-img mx-auto d-flex rounded img-fluid mb-3 mb-lg-0" src="{% static 'assets/img/matcha_ice_cream.jpg' %}" alt="..." />
+            <div class="product-item-description d-flex me-auto">
+                <div class="bg-faded p-5 rounded">
+                    <p class="mb-0">Our matcha green tea ice cream is a refreshing and creamy dessert, made with high-quality matcha powder. It's the perfect way to end your meal on a sweet note, with the unique and earthy flavor of matcha.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
