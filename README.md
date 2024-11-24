@@ -60,26 +60,19 @@ The customers will also be able to see the Menus that will be availiable at any 
 [Back to top](#contents)
 
 ## Screenshots
-| Large Display: |
-|----------------|
-| ![Large Screen](assets/img/large_screen.jpg) |
-<<<<<<< HEAD
-| ![Large Screen](assets/img/large_screen.jpg) |
 
-| Mobile Display: | Mobile Display: |
-|----------------|
-| ![Small Screen](assets/img/small_screen.jpg) |
+### Large Display:
+
+| ![Large Screen](assets/img/large_screen.jpg) |
+|----------------------------------------------|
+
+### Mobile Display:
+
 | ![Small Screen](assets/img/mobile_screen.jpg) | ![Small Screen](assets/img/mobile_screen2.jpg) |
-
-=======
-
-| Mobile Display: |
-|----------------|
-| ![Small Screen](assets/img/small_screen.jpg) |
->>>>>>> 339de9a1aa3ebf57bb0cb8174adf4e9a6f338c6d
-
+|----------------|-----------------|
 
 [Back to top](#contents)
+
 
 ## User Experience
 
