@@ -4,6 +4,7 @@ The MunchMonkey Pop-Up Restaurant site is intended to be used for marketing and 
 
 Live Site: [https://munchmonkey-bf0429fa9b54.herokuapp.com/](https://munchmonkey-bf0429fa9b54.herokuapp.com/)
 Test credentials:
+
 - Username: superuser
 - Password: ReallySup3r
 
