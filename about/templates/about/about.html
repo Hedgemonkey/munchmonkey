@@ -1,0 +1,33 @@
+<!-- FILE: about/templates/about/about.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "MunchMonkey - About" %}{% endblock title %}
+{% block description %}{% trans "About MunchMonkey" %}{% endblock description %}
+
+{% block content %}
+        <section class="page-section about-heading">
+            <div class="container">
+                <img class="img-fluid rounded about-heading-img mb-3 mb-lg-0" src="{% static 'assets/img/about.jpg' %}" alt="..." />
+                <div class="about-heading-content">
+                    <div class="row">
+                        <div class="col-xl-9 col-lg-10 mx-auto">
+                            <div class="bg-faded rounded p-5">
+                                <h2 class="section-heading mb-4">
+                                    <span class="section-heading-upper">Gourmet Street Food</span>
+                                    <span class="section-heading-lower">About MunchMonkey</span>
+                                </h2>
+                                <p>Founded with a passion for culinary excellence, MunchMonkey brings the finest gourmet street food to your neighborhood. Our pop-up restaurant travels to various locations, offering a unique dining experience that combines the vibrant flavors of street food with the sophistication of gourmet cuisine.</p>
+                                <p class="mb-0">
+                                    At MunchMonkey, we believe in using only the freshest ingredients sourced from local farmers and suppliers. Our menu is constantly evolving, featuring seasonal dishes that highlight the best of what each region has to offer. Whether you're joining us for a quick bite or a leisurely meal, we guarantee an unforgettable culinary adventure.
+                                </p>
+                                <p class="mb-0">
+                                    Join us at our next pop-up event and discover why MunchMonkey is the talk of the town. Follow us on social media to stay updated on our upcoming locations and special events. We can't wait to serve you!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+{% endblock %}
