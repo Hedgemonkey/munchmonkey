@@ -112,11 +112,14 @@
                                         {% else %}
                                             <span class="badge bg-warning text-dark">{% trans "Unconfirmed" %}</span>
                                         {% endif %}
+                                        {% if not reservation.canceled %}
+                                            <button class="btn btn-danger btn-sm float-end cancel-reservation-btn" data-reservation-id="{{ reservation.id }}">{% trans "Cancel" %}</button>
+                                        {% endif %}
                                     </li>
                                 {% endfor %}
                             </ul>
                         {% else %}
-                            <p>{% trans "You have no upcomming reservations." %}</p>
+                            <p>{% trans "You have no upcoming reservations." %}</p>
                         {% endif %}
                     {% else %}
                         <p>{% trans "You must be signed in to view your reservations." %} <a href="{% url 'account_login' %}">{% trans "Sign in" %}</a> {% trans "or" %} <a href="{% url 'account_signup' %}">{% trans "Sign up" %}</a>.</p>
@@ -141,6 +144,27 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Reservation Confirmation Modal -->
+<div class="modal fade" id="cancelReservationModal" tabindex="-1" aria-labelledby="cancelReservationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelReservationModalLabel">{% trans "Cancel Reservation" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Are you sure you want to cancel this reservation?" %}</p>
+                <input type="hidden" id="cancelReservationId">
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                <button type="button" class="btn btn-danger" id="confirmCancelReservation">{% trans "Cancel Reservation" %}</button>
             </div>
         </div>
     </div>

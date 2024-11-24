@@ -582,3 +582,12 @@ def make_reservation(request):
         else:
             return JsonResponse({'success': False, 'errors': form.errors})
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+@login_required
+def cancel_reservation(request, reservation_id):
+    if request.method == 'POST':
+        reservation = get_object_or_404(Booking, id=reservation_id, user=request.user)
+        reservation.canceled = True
+        reservation.save()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
